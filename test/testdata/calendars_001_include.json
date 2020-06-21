@@ -1,0 +1,329 @@
+{
+  "data": [
+    {
+      "id": "CAL001",
+      "type": "calendar",
+      "attributes": {
+        "name": "CalName001",
+        "created_at": "2020-05-01T09:00:00.000Z",
+        "description": "CalName001 Description",
+        "image_url": "https://attachments.timetreeapp.com/CalName001.jpg",
+        "color": "#000001",
+        "order": 0
+      },
+      "relationships": {
+        "labels": {
+          "data": [
+            {
+              "id": "CAL001,1",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,2",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,3",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,4",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,5",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,6",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,7",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,8",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,9",
+              "type": "label"
+            },
+            {
+              "id": "CAL001,10",
+              "type": "label"
+            }
+          ]
+        },
+        "members": {
+          "data": [
+            {
+              "id": "CAL001,USER001",
+              "type": "user"
+            },
+            {
+              "id": "CAL001,USER002",
+              "type": "user"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "CAL002",
+      "type": "calendar",
+      "attributes": {
+        "name": "CalName002",
+        "created_at": "2020-06-01T09:00:00.000Z",
+        "description": "CalName002 Description",
+        "image_url": "https://attachments.timetreeapp.com/CalName002.jpg",
+        "color": "#000002",
+        "order": 1
+      },
+      "relationships": {
+        "labels": {
+          "data": [
+            {
+              "id": "CAL002,1",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,2",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,3",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,4",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,5",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,6",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,7",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,8",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,9",
+              "type": "label"
+            },
+            {
+              "id": "CAL002,10",
+              "type": "label"
+            }
+          ]
+        },
+        "members": {
+          "data": [
+            {
+              "id": "CAL002,USER001",
+              "type": "user"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "CAL001,1",
+      "type": "label",
+      "attributes": {
+        "name": "Emerald green",
+        "color": "#2ecc87"
+      }
+    },
+    {
+      "id": "CAL001,2",
+      "type": "label",
+      "attributes": {
+        "name": "Modern cyan",
+        "color": "#3dc2c8"
+      }
+    },
+    {
+      "id": "CAL001,3",
+      "type": "label",
+      "attributes": {
+        "name": "Deep sky blue",
+        "color": "#47b2f7"
+      }
+    },
+    {
+      "id": "CAL001,4",
+      "type": "label",
+      "attributes": {
+        "name": "Pastel brown",
+        "color": "#948078"
+      }
+    },
+    {
+      "id": "CAL001,5",
+      "type": "label",
+      "attributes": {
+        "name": "Midnight black",
+        "color": "#212121"
+      }
+    },
+    {
+      "id": "CAL001,6",
+      "type": "label",
+      "attributes": {
+        "name": "Apple red",
+        "color": "#e73b3b"
+      }
+    },
+    {
+      "id": "CAL001,7",
+      "type": "label",
+      "attributes": {
+        "name": "French rose",
+        "color": "#f35f8c"
+      }
+    },
+    {
+      "id": "CAL001,8",
+      "type": "label",
+      "attributes": {
+        "name": "Coral pink",
+        "color": "#fb7f77"
+      }
+    },
+    {
+      "id": "CAL001,9",
+      "type": "label",
+      "attributes": {
+        "name": "Bright orange",
+        "color": "#fdc02d"
+      }
+    },
+    {
+      "id": "CAL001,10",
+      "type": "label",
+      "attributes": {
+        "name": "Soft violet",
+        "color": "#b38bdc"
+      }
+    },
+    {
+      "id": "CAL001,USER001",
+      "type": "user",
+      "attributes": {
+        "name": "USER001 Name",
+        "description": "USER001 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    },
+    {
+      "id": "CAL001,USER002",
+      "type": "user",
+      "attributes": {
+        "name": "USER002 Name",
+        "description": "USER002 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER002.png"
+      }
+    },
+    {
+      "id": "CAL002,1",
+      "type": "label",
+      "attributes": {
+        "name": "Emerald green",
+        "color": "#2ecc87"
+      }
+    },
+    {
+      "id": "CAL002,2",
+      "type": "label",
+      "attributes": {
+        "name": "Modern cyan",
+        "color": "#3dc2c8"
+      }
+    },
+    {
+      "id": "CAL002,3",
+      "type": "label",
+      "attributes": {
+        "name": "Deep sky blue",
+        "color": "#47b2f7"
+      }
+    },
+    {
+      "id": "CAL002,4",
+      "type": "label",
+      "attributes": {
+        "name": "Pastel brown",
+        "color": "#948078"
+      }
+    },
+    {
+      "id": "CAL002,5",
+      "type": "label",
+      "attributes": {
+        "name": "Midnight black",
+        "color": "#212121"
+      }
+    },
+    {
+      "id": "CAL002,6",
+      "type": "label",
+      "attributes": {
+        "name": "Apple red",
+        "color": "#e73b3b"
+      }
+    },
+    {
+      "id": "CAL002,7",
+      "type": "label",
+      "attributes": {
+        "name": "French rose",
+        "color": "#f35f8c"
+      }
+    },
+    {
+      "id": "CAL002,8",
+      "type": "label",
+      "attributes": {
+        "name": "Coral pink",
+        "color": "#fb7f77"
+      }
+    },
+    {
+      "id": "CAL002,9",
+      "type": "label",
+      "attributes": {
+        "name": "Bright orange",
+        "color": "#fdc02d"
+      }
+    },
+    {
+      "id": "CAL002,10",
+      "type": "label",
+      "attributes": {
+        "name": "Soft violet",
+        "color": "#b38bdc"
+      }
+    },
+    {
+      "id": "CAL002,USER001",
+      "type": "user",
+      "attributes": {
+        "name": "USER001 Name",
+        "description": "USER001 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "data": {
+    "id": "ACT001",
+    "type": "activity",
+    "attributes": {
+      "content": "ACT001 Content",
+      "created_at": "2020-06-20T11:08:56.510Z",
+      "updated_at": "2020-06-20T11:08:56.510Z"
+    }
+  }
+}

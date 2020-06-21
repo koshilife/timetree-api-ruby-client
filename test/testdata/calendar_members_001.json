@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": "CAL001,USER001",
+      "type": "user",
+      "attributes": {
+        "name": "USER001 Name",
+        "description": "USER001 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    },
+    {
+      "id": "CAL001,USER002",
+      "type": "user",
+      "attributes": {
+        "name": "USER002 Name",
+        "description": "USER002 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER002.png"
+      }
+    }
+  ]
+}

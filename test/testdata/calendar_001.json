@@ -1,0 +1,72 @@
+{
+  "data": {
+    "id": "CAL001",
+    "type": "calendar",
+    "attributes": {
+      "name": "CalName001",
+      "created_at": "2020-05-01T09:00:00.000Z",
+      "description": "CalName001 Description",
+      "image_url": "https://attachments.timetreeapp.com/CalName001.jpg",
+      "color": "#000001",
+      "order": 0
+    },
+    "relationships": {
+      "labels": {
+        "data": [
+          {
+            "id": "CAL001,1",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,2",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,3",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,4",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,5",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,6",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,7",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,8",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,9",
+            "type": "label"
+          },
+          {
+            "id": "CAL001,10",
+            "type": "label"
+          }
+        ]
+      },
+      "members": {
+        "data": [
+          {
+            "id": "CAL001,USER001",
+            "type": "user"
+          },
+          {
+            "id": "CAL001,USER002",
+            "type": "user"
+          }
+        ]
+      }
+    }
+  }
+}

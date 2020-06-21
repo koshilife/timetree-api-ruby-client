@@ -1,0 +1,157 @@
+{
+  "data": [
+    {
+      "id": "EV001",
+      "type": "event",
+      "attributes": {
+        "title": "EV001 Title",
+        "all_day": false,
+        "start_at": "2020-06-20T10:00:00.000Z",
+        "start_timezone": "Asia/Tokyo",
+        "end_at": "2020-06-20T11:00:00.000Z",
+        "end_timezone": "Asia/Tokyo",
+        "location": "EV001 Location",
+        "url": "https://github.com",
+        "updated_at": "2020-06-18T09:00:00.000Z",
+        "created_at": "2020-06-18T09:00:00.000Z",
+        "category": "schedule",
+        "description": null,
+        "recurrence": null,
+        "recurring_uuid": null
+      },
+      "relationships": {
+        "label": {
+          "data": {
+            "id": "CAL001,7",
+            "type": "label"
+          }
+        },
+        "creator": {
+          "data": {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        },
+        "attendees": {
+          "data": [
+            {
+              "id": "CAL001,USER001",
+              "type": "user"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "EV002",
+      "type": "event",
+      "attributes": {
+        "title": "EV002 Title",
+        "all_day": true,
+        "start_at": "2020-06-21T00:00:00.000Z",
+        "start_timezone": "UTC",
+        "end_at": "2020-06-21T00:00:00.000Z",
+        "end_timezone": "UTC",
+        "location": "EV002 Location",
+        "url": null,
+        "updated_at": "2020-06-18T09:00:00.000Z",
+        "created_at": "2020-06-18T09:00:00.000Z",
+        "category": "schedule",
+        "description": "EV002 Description",
+        "recurrence": null,
+        "recurring_uuid": "ABCDE12345"
+      },
+      "relationships": {
+        "label": {
+          "data": {
+            "id": "CAL001,7",
+            "type": "label"
+          }
+        },
+        "creator": {
+          "data": {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        },
+        "attendees": {
+          "data": [
+            {
+              "id": "CAL001,USER001",
+              "type": "user"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "EV003",
+      "type": "event",
+      "attributes": {
+        "title": "EV003 Title",
+        "all_day": false,
+        "start_at": "2020-06-22T01:00:00.000Z",
+        "start_timezone": "Asia/Tokyo",
+        "end_at": "2020-06-22T02:00:00.000Z",
+        "end_timezone": "Asia/Tokyo",
+        "location": "Los Angeles",
+        "url": "https://github.com/",
+        "updated_at": "2020-06-21T00:07:23.059Z",
+        "created_at": "2020-06-21T00:07:22.852Z",
+        "category": "keep",
+        "description": "EV003 Description",
+        "recurrence": null,
+        "recurring_uuid": null
+      },
+      "relationships": {
+        "label": {
+          "data": {
+            "id": "CAL001,2",
+            "type": "label"
+          }
+        },
+        "creator": {
+          "data": {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        },
+        "attendees": {
+          "data": [
+            {
+              "id": "CAL001,USER001",
+              "type": "user"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "CAL001,USER001",
+      "type": "user",
+      "attributes": {
+        "name": "USER001 Name",
+        "description": "USER001 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    },
+    {
+      "id": "CAL001,7",
+      "type": "label",
+      "attributes": {
+        "name": "French rose",
+        "color": "#f35f8c"
+      }
+    },
+    {
+      "id": "CAL001,2",
+      "type": "label",
+      "attributes": {
+        "name": "Modern cyan",
+        "color": "#3dc2c8"
+      }
+    }
+  ]
+}

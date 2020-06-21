@@ -1,0 +1,44 @@
+{
+  "data": {
+    "id": "EV001",
+    "type": "event",
+    "attributes": {
+      "title": "EV001 Title",
+      "all_day": false,
+      "start_at": "2020-06-20T10:00:00.000Z",
+      "start_timezone": "Asia/Tokyo",
+      "end_at": "2020-06-20T11:00:00.000Z",
+      "end_timezone": "Asia/Tokyo",
+      "location": "EV001 Location",
+      "url": "https://github.com",
+      "updated_at": "2020-06-18T09:00:00.000Z",
+      "created_at": "2020-06-18T09:00:00.000Z",
+      "category": "schedule",
+      "description": null,
+      "recurrence": null,
+      "recurring_uuid": null
+    },
+    "relationships": {
+      "label": {
+        "data": {
+          "id": "CAL001,7",
+          "type": "label"
+        }
+      },
+      "creator": {
+        "data": {
+          "id": "CAL001,USER001",
+          "type": "user"
+        }
+      },
+      "attendees": {
+        "data": [
+          {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        ]
+      }
+    }
+  }
+}

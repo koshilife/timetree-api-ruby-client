@@ -1,0 +1,84 @@
+{
+  "data": [
+    {
+      "id": "CAL001,1",
+      "type": "label",
+      "attributes": {
+        "name": "Emerald green",
+        "color": "#2ecc87"
+      }
+    },
+    {
+      "id": "CAL001,2",
+      "type": "label",
+      "attributes": {
+        "name": "Modern cyan",
+        "color": "#3dc2c8"
+      }
+    },
+    {
+      "id": "CAL001,3",
+      "type": "label",
+      "attributes": {
+        "name": "Deep sky blue",
+        "color": "#47b2f7"
+      }
+    },
+    {
+      "id": "CAL001,4",
+      "type": "label",
+      "attributes": {
+        "name": "Pastel brown",
+        "color": "#948078"
+      }
+    },
+    {
+      "id": "CAL001,5",
+      "type": "label",
+      "attributes": {
+        "name": "Midnight black",
+        "color": "#212121"
+      }
+    },
+    {
+      "id": "CAL001,6",
+      "type": "label",
+      "attributes": {
+        "name": "Apple red",
+        "color": "#e73b3b"
+      }
+    },
+    {
+      "id": "CAL001,7",
+      "type": "label",
+      "attributes": {
+        "name": "French rose",
+        "color": "#f35f8c"
+      }
+    },
+    {
+      "id": "CAL001,8",
+      "type": "label",
+      "attributes": {
+        "name": "Coral pink",
+        "color": "#fb7f77"
+      }
+    },
+    {
+      "id": "CAL001,9",
+      "type": "label",
+      "attributes": {
+        "name": "Bright orange",
+        "color": "#fdc02d"
+      }
+    },
+    {
+      "id": "CAL001,10",
+      "type": "label",
+      "attributes": {
+        "name": "Soft violet",
+        "color": "#b38bdc"
+      }
+    }
+  ]
+}
