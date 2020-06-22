@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-Dir[
-  File.join(
-    File.dirname(__FILE__),
-    'timetree',
-    '*'
-  )
-].sort.each do |f|
-  require f
-end
+require 'zeitwerk'
+loader = Zeitwerk::Loader.for_gem
+loader.inflector.inflect(
+  'timetree' => 'TimeTree'
+)
+loader.setup
 
+# module for TimeTree apis client
 module TimeTree
   class << self
     def configure
@@ -19,8 +17,5 @@ module TimeTree
     def configuration
       @configuration ||= Configuration.new
     end
-  end
-
-  class Error < StandardError
   end
 end

@@ -1,21 +1,228 @@
 # frozen_string_literal: true
 
-require 'time'
-require 'faraday'
-require 'faraday_middleware'
-
 module TimeTree
+  # TimeTree apis client.
   class Client
     API_HOST = 'https://timetreeapis.com'
-
+    # @return [String]
+    attr_reader :access_token
+    # @return [Integer]
     attr_reader :ratelimit_limit
+    # @return [Integer]
     attr_reader :ratelimit_remaining
+    # @return [Time]
     attr_reader :ratelimit_reset_at
 
     def initialize(access_token = nil)
-      config = TimeTree.configuration
-      @access_token = access_token || config.access_token
-      @logger = config.logger
+      @access_token = access_token || TimeTree.configuration.access_token
+      @http_cmd = HttpCommand.new(API_HOST, self)
+    end
+
+    #
+    # Get current user information.
+    #
+    # @return [TimeTree::User]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def current_user
+      res = get '/user'
+      raise Error, res if res.status != 200
+
+      to_model res.body[:data]
+    end
+
+    #
+    # Get a single calendar's information.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [Array<symbol>] include_relationships
+    # includes association's object in the response.
+    # @return [TimeTree::Calendar]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def calendar(cal_id, include_relationships: nil)
+      params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
+      res = @http_cmd.get "/calendars/#{cal_id}", params
+      raise Error, res if res.status != 200
+
+      to_model(res.body[:data], included: res.body[:included])
+    end
+
+    #
+    # Get calendar list that current user can access.
+    #
+    # @param [Array<symbol>] include_relationships
+    # includes association's object in the response.
+    # @return [Array<TimeTree::Calendar>]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def calendars(include_relationships: nil)
+      params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
+      res = @http_cmd.get '/calendars', params
+      raise Error, res if res.status != 200
+
+      included = res.body[:included]
+      res.body[:data].map { |item| to_model(item, included: included) }
+    end
+
+    #
+    # Get a calendar's label information used in event.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @return [Array<TimeTree::Label>]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def calendar_labels(cal_id)
+      res = @http_cmd.get "/calendars/#{cal_id}/labels"
+      raise Error, res if res.status != 200
+
+      res.body[:data].map { |item| to_model(item) }
+    end
+
+    #
+    # Get a calendar's member information.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @return [Array<TimeTree::User>]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def calendar_members(cal_id)
+      res = @http_cmd.get "/calendars/#{cal_id}/members"
+      raise Error, res if res.status != 200
+
+      res.body[:data].map { |item| to_model item }
+    end
+
+    #
+    # Get the event's information.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [String] event_id
+    # event's id.
+    # @param [Array<symbol>] include_relationships
+    # includes association's object in the response.
+    # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def event(cal_id, event_id, include_relationships: nil)
+      params = relationships_params(include_relationships, Event::RELATIONSHIPS)
+      res = @http_cmd.get "/calendars/#{cal_id}/events/#{event_id}", params
+      raise Error, res if res.status != 200
+
+      ev = to_model(res.body[:data], included: res.body[:included])
+      ev.calendar_id = cal_id
+      ev
+    end
+
+    #
+    # Get the events' information after a request date.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [Integer] days
+    # The number of days to get. A range from 1 to 7 can be specified.
+    # @param [String] timezone
+    # Timezone.
+    # @param [Array<symbol>] include_relationships
+    # includes association's object in the response.
+    # @return [Array<TimeTree::Event>]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def upcoming_events(cal_id, days: 7, timezone: 'UTC', include_relationships: nil)
+      params = relationships_params(include_relationships, Event::RELATIONSHIPS)
+      params.merge!(days: days, timezone: timezone)
+      res = @http_cmd.get "/calendars/#{cal_id}/upcoming_events", params
+      raise Error, res if res.status != 200
+
+      included = res.body[:included]
+      res.body[:data].map do |item|
+        ev = to_model(item, included: included)
+        ev.calendar_id = cal_id
+        ev
+      end
+    end
+
+    #
+    # Creates an event to the calendar.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [TimeTree::Event#data_params] params
+    # event's information.
+    # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def create_event(cal_id, params)
+      res = @http_cmd.post "/calendars/#{cal_id}/events", params
+      raise Error, res if res.status != 201
+
+      ev = to_model res.body[:data]
+      ev.calendar_id = cal_id
+      ev
+    end
+
+    #
+    # Updates an event.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [String] event_id
+    # event's id.
+    # @param [TimeTree::Event#data_params] params
+    # event's information.
+    # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def update_event(cal_id, event_id, params)
+      res = @http_cmd.put "/calendars/#{cal_id}/events/#{event_id}", params
+      raise Error, res if res.status != 200
+
+      ev = to_model res.body[:data]
+      ev.calendar_id = cal_id
+      ev
+    end
+
+    #
+    # Deletes an event.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [String] event_id
+    # event's id.
+    # @return [Boolean]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def delete_event(cal_id, event_id)
+      res = @http_cmd.delete "/calendars/#{cal_id}/events/#{event_id}"
+      raise Error, res if res.status != 204
+
+      true
+    end
+
+    #
+    # Creates comment to an event.
+    #
+    # @param [String] cal_id
+    # calendar's id.
+    # @param [String] event_id
+    # event's id.
+    # @param [TimeTree::Activity#data_params] params
+    # comment's information.
+    # @return [TimeTree::Activity]
+    # @raise [TimeTree::Error] if the http response status is not success.
+    # @since 0.0.1
+    def create_activity(cal_id, event_id, params)
+      res = @http_cmd.post "/calendars/#{cal_id}/events/#{event_id}/activities", params
+      raise Error, res if res.status != 201
+
+      activity = to_model res.body[:data]
+      activity.calendar_id = cal_id
+      activity.event_id = event_id
+      activity
     end
 
     def inspect
@@ -29,122 +236,16 @@ module TimeTree
       "\#<#{self.class}:#{object_id}#{limit_info}>"
     end
 
-    #
-    # User
-    #
-
-    def user
-      res = get '/user'
-      raise if res.status != 200
-
-      to_model res.body[:data]
-    end
-
-    #
-    # Calendar
-    #
-
-    def calendar(cal_id, include_relationships: nil)
-      params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
-      res = get "/calendars/#{cal_id}", params
-      raise if res.status != 200
-
-      to_model(res.body[:data], included: res.body[:included])
-    end
-
-    def calendars(include_relationships: nil)
-      params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
-      res = get '/calendars', params
-      raise if res.status != 200
-
-      included = res.body[:included]
-      res.body[:data].map { |item| to_model(item, included: included) }
-    end
-
-    def calendar_labels(cal_id)
-      res = get "/calendars/#{cal_id}/labels"
-      raise if res.status != 200
-
-      res.body[:data].map { |item| to_model(item) }
-    end
-
-    def calendar_members(cal_id)
-      res = get "/calendars/#{cal_id}/members"
-      raise if res.status != 200
-
-      res.body[:data].map { |item| to_model item }
-    end
-
-    #
-    # Schedule/Keep
-    #
-
-    def event(cal_id, event_id, include_relationships: nil)
-      params = relationships_params(include_relationships, Event::RELATIONSHIPS)
-      res = get "/calendars/#{cal_id}/events/#{event_id}", params
-      raise if res.status != 200
-
-      ev = to_model(res.body[:data], included: res.body[:included])
-      ev.calendar_id = cal_id
-      ev
-    end
-
-    def upcoming_events(cal_id, days: 7, timezone: 'UTC', include_relationships: nil)
-      params = relationships_params(include_relationships, Event::RELATIONSHIPS)
-      params.merge!(days: days, timezone: timezone)
-      res = get "/calendars/#{cal_id}/upcoming_events", params
-      raise if res.status != 200
-
-      included = res.body[:included]
-      res.body[:data].map do |item|
-        ev = to_model(item, included: included)
-        ev.calendar_id = cal_id
-        ev
-      end
-    end
-
-    def create_event(cal_id, params)
-      res = post "/calendars/#{cal_id}/events", params
-      raise if res.status != 201
-
-      ev = to_model res.body[:data]
-      ev.calendar_id = cal_id
-      ev
-    end
-
-    def update_event(cal_id, event_id, params)
-      res = put "/calendars/#{cal_id}/events/#{event_id}", params
-      raise if res.status != 200
-
-      ev = to_model res.body[:data]
-      ev.calendar_id = cal_id
-      ev
-    end
-
-    def delete_event(cal_id, event_id)
-      res = delete "/calendars/#{cal_id}/events/#{event_id}"
-      raise if res.status != 204
-
-      true
-    end
-
-    #
-    # Activity
-    #
-
-    def create_activity(cal_id, event_id, params)
-      res = post "/calendars/#{cal_id}/events/#{event_id}/activities", params
-      raise if res.status != 201
-
-      activity = to_model res.body[:data]
-      activity.calendar_id = cal_id
-      activity.event_id = event_id
-      activity
+    def update_ratelimit(res)
+      limit = res.headers['x-ratelimit-limit']
+      remaining = res.headers['x-ratelimit-remaining']
+      reset = res.headers['x-ratelimit-reset']
+      @ratelimit_limit = limit.to_i if limit
+      @ratelimit_remaining = remaining.to_i if remaining
+      @ratelimit_reset_at = Time.at reset.to_i if reset
     end
 
     private
-
-    attr_reader :logger
 
     def to_model(data, included: nil)
       TimeTree::BaseModel.to_model data, client: self, included: included
@@ -155,65 +256,6 @@ module TimeTree
       relationships ||= default
       params[:include] = relationships.join ',' if relationships.is_a? Array
       params
-    end
-
-    def update_ratelimit(res)
-      limit = res.headers['x-ratelimit-limit']
-      remaining = res.headers['x-ratelimit-remaining']
-      reset = res.headers['x-ratelimit-reset']
-      @ratelimit_limit = limit.to_i if limit
-      @ratelimit_remaining = remaining.to_i if remaining
-      @ratelimit_reset_at = Time.at reset.to_i if reset
-    end
-
-    def get(path, params = {})
-      logger.info "GET #{connection.build_url("#{API_HOST}#{path}", params)}"
-      res = connection.get path, params
-      update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
-      res
-    end
-
-    def put(path, params = {})
-      logger.debug "PUT #{API_HOST}#{path} body:#{params}"
-      res = connection.put path do |req|
-        req.headers['Content-Type'] = 'application/json'
-        req.body = params.to_json
-      end
-      update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
-      res
-    end
-
-    def post(path, params = {})
-      @logger.debug "POST #{API_HOST}#{path} body:#{params}"
-      res = connection.post path, params do |req|
-        req.headers['Content-Type'] = 'application/json'
-        req.body = params.to_json
-      end
-      update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
-      res
-    end
-
-    def delete(path, params = {})
-      @logger.debug "DELETE #{API_HOST}#{path} params:#{params}"
-      res = connection.delete path, params
-      update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
-      res
-    end
-
-    def connection
-      Faraday.new(
-        url: API_HOST,
-        headers: {
-          'Accept' => 'application/vnd.timetree.v1+json',
-          'Authorization' => "Bearer #{@access_token}"
-        }
-      ) do |builder|
-        builder.response :json, parser_options: { symbolize_names: true }, content_type: /\bjson$/
-      end
     end
   end
 end

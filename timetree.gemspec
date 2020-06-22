@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'faraday', '~> 1.0.1'
   spec.add_runtime_dependency 'faraday_middleware', '~> 1.0.0'
+  spec.add_runtime_dependency 'zeitwerk', '~> 2.3.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'minitest', '~> 5.14.0'
