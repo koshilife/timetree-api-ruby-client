@@ -193,7 +193,7 @@ module TimeTree
     # calendar's id.
     # @param [String] event_id
     # event's id.
-    # @return [Boolean]
+    # @return [true] if the operation succeeded.
     # @raise [TimeTree::Error] if the http response status is not success.
     # @since 0.0.1
     def delete_event(cal_id, event_id)
@@ -236,6 +236,11 @@ module TimeTree
       "\#<#{self.class}:#{object_id}#{limit_info}>"
     end
 
+    #
+    # update ratelimit properties
+    #
+    # @param [Faraday::Response] res
+    # apis http response.
     def update_ratelimit(res)
       limit = res.headers['x-ratelimit-limit']
       remaining = res.headers['x-ratelimit-remaining']

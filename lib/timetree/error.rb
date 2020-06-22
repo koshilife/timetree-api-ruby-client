@@ -3,15 +3,15 @@
 module TimeTree
   # TimeTree apis client error object.
   class Error < StandardError
-    # [Faraday::Response]
+    # @return [Faraday::Response]
     attr_reader :response
-    # [String]
+    # @return [String]
     attr_reader :type
-    # [String]
+    # @return [String]
     attr_reader :title
-    # [String]
+    # @return [String]
     attr_reader :errors
-    # [Integer]
+    # @return [Integer]
     attr_reader :status
 
     def initialize(response)
