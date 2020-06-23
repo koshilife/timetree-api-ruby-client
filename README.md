@@ -1,4 +1,4 @@
-# TimeTree Api Client
+# Simple TimeTree apis client
 
 [![Gem Version](https://badge.fury.io/rb/timetree.svg)](http://badge.fury.io/rb/timetree)
 
@@ -37,7 +37,57 @@ client = TimeTree::Client.new
 # using initializer
 client = TimeTree::Client.new('<YOUR_ACCESS_TOKEN>')
 
-# TODO
+# get a current user's information
+user = client.current_user
+=> #<TimeTree::User id:xxx_u001>
+user.name
+=> "USER Name 001"
+
+# get current user's calendars
+cals = client.calendars
+=> [#<TimeTree::Calendar id:xxx_cal001>, #<TimeTree::Calendar id:xxx_cal002>, ...]
+
+cal = cals.first
+cal.name
+=> "Calendar Name 001"
+
+# get upcoming events on the calendar
+evs = cal.upcoming_events
+=> [#<TimeTree::Event id:xxx_ev001>, #<TimeTree::Event id:xxx_ev002>, ...]
+ev = evs.first
+ev.title
+=> "Event Name 001"
+
+# updates an event
+ev.title += ' Updated'
+ev.start_at = Time.parse('2020-06-20 09:00 +09:00')
+ev.end_at = Time.parse('2020-06-20 10:00 +09:00')
+ev.update
+=> #<TimeTree::Event id:xxx_ev001>
+
+# creates an event
+copy_ev = ev.dup
+new_ev = copy_ev.create
+=> #<TimeTree::Event id:xxx_newev001>
+
+# deletes an event
+ev.delete
+=> true
+
+# creates comment to an event
+ev.create_comment 'HOGE HOGE message.'
+=> #<TimeTree::Activity id:xxx_act001>
+
+# check apis error response
+begin
+  ev.delete
+  ev.delete # 404 Error occured.
+rescue TimeTree::ApiError => e
+  e
+  => #<TimeTree::ApiError title:Not Found, status:404>
+  e.response
+  => #<Faraday::Response>
+end
 ```
 
 ## Contributing
