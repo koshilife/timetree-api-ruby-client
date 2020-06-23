@@ -59,7 +59,7 @@ module TimeTree
         url: @host,
         headers: {
           'Accept' => 'application/vnd.timetree.v1+json',
-          'Authorization' => "Bearer #{@client.access_token}"
+          'Authorization' => "Bearer #{@client.token}"
         }
       ) do |builder|
         builder.response :json, parser_options: { symbolize_names: true }, content_type: /\bjson$/

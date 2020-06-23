@@ -31,7 +31,8 @@ module TimeTree
     attr_accessor :updated_at
     # @return [Time]
     attr_accessor :created_at
-    # @return [TimeTree::Calendar#id]
+    # calendar's id.
+    # @return [String]
     attr_accessor :calendar_id
 
     # @return [TimeTree::User]
@@ -44,14 +45,28 @@ module TimeTree
     TIME_FIELDS = %i[start_at end_at updated_at created_at].freeze
     RELATIONSHIPS = %i[creator label attendees].freeze
 
+    #
+    # Creates an event to the associated calendar.
+    #
+    # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @since 0.0.1
     def create
-      return if @client.nil?
+      raise Error, 'client is required.' if @client.nil?
 
       @client.create_event calendar_id, data_params
     end
 
+    #
+    # Creates comment to the event.
+    #
+    # @return [TimeTree::Activity]
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @since 0.0.1
     def create_comment(message)
-      return if @client.nil?
+      raise Error, '@client is nil.' if @client.nil?
 
       params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
       activity = to_model params
@@ -60,20 +75,40 @@ module TimeTree
       activity.create
     end
 
+    #
+    # Updates the event.
+    #
+    # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if the id property is not set.
+    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @since 0.0.1
     def update
-      return if @client.nil?
-      return if id.nil?
+      raise Error, '@client is nil.' if @client.nil?
+      raise Error, 'id is required.' if id.nil?
 
       @client.update_event calendar_id, id, data_params
     end
 
+    #
+    # Deletes the event.
+    #
+    # @return [true] if the operation succeeded.
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if the id property is not set.
+    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @since 0.0.1
     def delete
-      return if @client.nil?
-      return if id.nil?
+      raise Error, '@client is nil.' if @client.nil?
+      raise Error, 'id is required.' if id.nil?
 
       @client.delete_event calendar_id, id
     end
 
+    #
+    # convert to a TimeTree request body format.
+    #
+    # @return [Hash]
     def data_params
       attributes_params = {
         category: category,

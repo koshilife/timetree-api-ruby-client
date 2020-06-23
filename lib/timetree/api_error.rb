@@ -2,7 +2,7 @@
 
 module TimeTree
   # TimeTree apis client error object.
-  class Error < StandardError
+  class ApiError < StandardError
     # @return [Faraday::Response]
     attr_reader :response
     # @return [String]

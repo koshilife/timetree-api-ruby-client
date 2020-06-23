@@ -9,6 +9,8 @@ loader.setup
 
 # module for TimeTree apis client
 module TimeTree
+  class Error < StandardError
+  end
   class << self
     def configure
       yield configuration

@@ -30,7 +30,7 @@ Set `access_token` to the value you got by above:
 ```ruby
 # using configure
 TimeTree.configure do |config|
-  config.access_token = '<YOUR_ACCESS_TOKEN>'
+  config.token = '<YOUR_ACCESS_TOKEN>'
 end
 client = TimeTree::Client.new
 

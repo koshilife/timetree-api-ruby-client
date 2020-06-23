@@ -12,6 +12,10 @@ module TimeTree
     # @return [String]
     attr_reader :type
 
+    # @param [Hash] data
+    # TimeTree apis's response data.
+    # @param [Hash] included
+    # @param [TimeTree::Client] client
     # @return [Array<TimeTree::BaseModel>]
     def self.to_model(data, included: nil, client: nil)
       id = data[:id]

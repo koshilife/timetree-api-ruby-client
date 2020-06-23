@@ -6,7 +6,7 @@ module TimeTree
   # TimeTree apis client configuration.
   class Configuration
     # @return [String]
-    attr_accessor :access_token
+    attr_accessor :token
     # @return [Logger]
     attr_accessor :logger
 
