@@ -11,13 +11,20 @@ class ClientTest < Minitest::Test
     @client = TimeTree::Client.new('token')
   end
 
+  def test_fetch_current_user
+    user_res_body = load_test_data('user_001.json')
+    add_stub_request(:get, "#{HOST}/user", res_body: user_res_body)
+    user = @client.current_user
+    assert_equal 600, @client.ratelimit_limit
+    assert_equal 599, @client.ratelimit_remaining
+    assert_equal Time, @client.ratelimit_reset_at.class
+    assert_user001 user
+  end
+
   def test_fetch_calendars
     cals_res_body = load_test_data('calendars_001.json')
     add_stub_request(:get, %r{#{HOST}/calendars(\?.*)?}, res_body: cals_res_body)
     cals = @client.calendars
-    assert_equal 600, @client.ratelimit_limit
-    assert_equal 599, @client.ratelimit_remaining
-    assert_equal Time, @client.ratelimit_reset_at.class
     assert_equal 2, cals.length
 
     cal1 = cals[0]
@@ -228,20 +235,26 @@ class ClientTest < Minitest::Test
     assert_equal '#b38bdc', l_label.color
   end
 
+  def assert_user001(user)
+    assert_equal 'CAL001,USER001', user.id
+    assert_equal 'user', user.type
+    assert_equal 'USER001 Name', user.name
+    assert_equal 'USER001 Description', user.description
+    assert_equal 'https://attachments.timetreeapp.com/USER001.png', user.image_url
+  end
+
+  def assert_user002(user)
+    assert_equal 'CAL001,USER002', user.id
+    assert_equal 'user', user.type
+    assert_equal 'USER002 Name', user.name
+    assert_equal 'USER002 Description', user.description
+    assert_equal 'https://attachments.timetreeapp.com/USER002.png', user.image_url
+  end
+
   def assert_cal001_members(mems)
     assert_equal 2, mems.length
-    f_mem = mems.first
-    assert_equal 'CAL001,USER001', f_mem.id
-    assert_equal 'user', f_mem.type
-    assert_equal 'USER001 Name', f_mem.name
-    assert_equal 'USER001 Description', f_mem.description
-    assert_equal 'https://attachments.timetreeapp.com/USER001.png', f_mem.image_url
-    l_mem = mems.last
-    assert_equal 'CAL001,USER002', l_mem.id
-    assert_equal 'user', l_mem.type
-    assert_equal 'USER002 Name', l_mem.name
-    assert_equal 'USER002 Description', l_mem.description
-    assert_equal 'https://attachments.timetreeapp.com/USER002.png', l_mem.image_url
+    assert_user001 mems.first
+    assert_user002 mems.last
   end
 
   def assert_cal002(cal)

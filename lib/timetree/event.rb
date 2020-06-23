@@ -50,7 +50,7 @@ module TimeTree
     #
     # @return [TimeTree::Event]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
       raise Error, 'client is required.' if @client.nil?
@@ -63,7 +63,7 @@ module TimeTree
     #
     # @return [TimeTree::Activity]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_comment(message)
       raise Error, '@client is nil.' if @client.nil?
@@ -81,7 +81,7 @@ module TimeTree
     # @return [TimeTree::Event]
     # @raise [TimeTree::Error] if @client is not set.
     # @raise [TimeTree::Error] if the id property is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update
       raise Error, '@client is nil.' if @client.nil?
@@ -96,7 +96,7 @@ module TimeTree
     # @return [true] if the operation succeeded.
     # @raise [TimeTree::Error] if @client is not set.
     # @raise [TimeTree::Error] if the id property is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete
       raise Error, '@client is nil.' if @client.nil?
@@ -109,33 +109,35 @@ module TimeTree
     # convert to a TimeTree request body format.
     #
     # @return [Hash]
+    # @since 0.0.1
     def data_params
-      attributes_params = {
-        category: category,
-        title: title,
-        all_day: all_day,
-        start_at: start_at.iso8601,
-        start_timezone: start_timezone,
-        end_at: end_at.iso8601,
-        end_timezone: end_timezone,
-        description: description,
-        location: location,
-        url: url
-      }
-      relationhips_params = {}
-      if @relationships[:label]
-        label_data = { id: @relationships[:label], type: 'label' }
-        relationhips_params[:label] = { data: label_data }
-      end
-      if @relationships[:attendees]
-        attendees_data = @relationships[:attendees].map { |_id| { id: _id, type: 'user' } }
-        relationhips_params[:attendees] = { data: attendees_data }
-      end
       {
         data: {
-          attributes: attributes_params,
-          relationships: relationhips_params
+          attributes: {
+            category: category,
+            title: title,
+            all_day: all_day,
+            start_at: start_at.iso8601,
+            start_timezone: start_timezone,
+            end_at: end_at.iso8601,
+            end_timezone: end_timezone,
+            description: description,
+            location: location,
+            url: url
+          },
+          relationships: relationships_params
         }
+      }
+    end
+
+    private
+
+    def relationships_params
+      current_label = label ? { type: 'label', id: label.id } : @relationships[:label]
+      current_attendees = attendees ? attendees.map { |u| { type: 'user', id: u.id } } : @relationships[:attendees]
+      {
+        label: { data: current_label },
+        attendees: { data: current_attendees }
       }
     end
   end

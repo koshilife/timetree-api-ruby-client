@@ -12,15 +12,18 @@ module TimeTree
     # @return [String]
     attr_reader :type
 
-    # @param [Hash] data
+    # @param data [Hash]
     # TimeTree apis's response data.
-    # @param [Hash] included
-    # @param [TimeTree::Client] client
-    # @return [Array<TimeTree::BaseModel>]
+    # @param included [Hash]
+    # @param client [TimeTree::Client]
+    # @return [TimeTree::User, TimeTree::Label, TimeTree::Calendar, TimeTree::Event, TimeTree::Activity]
+    # A TimeTree model object that be based on the type.
+    # @raise [TimeTree::Error] if the type property is not set.
+    # @since 0.0.1
     def self.to_model(data, included: nil, client: nil)
       id = data[:id]
       type = data[:type]
-      return if type.nil?
+      raise Error, 'type is required.' if type.nil?
 
       attributes = data[:attributes] || {}
       relationships = data[:relationships] || {}
@@ -38,10 +41,10 @@ module TimeTree
         User.new(**params)
       when 'label'
         Label.new(**params)
-      when 'event'
-        Event.new(**params)
       when 'calendar'
         Calendar.new(**params)
+      when 'event'
+        Event.new(**params)
       when 'activity'
         Activity.new(**params)
       end

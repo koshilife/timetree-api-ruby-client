@@ -22,11 +22,11 @@ module TimeTree
     #
     # Get the event's information.
     #
-    # @param [String] event_id
+    # @param event_id [String]
     # event's id.
     # @return [TimeTree::Event]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(event_id)
       raise Error, '@client is nil.' if @client.nil?
@@ -37,13 +37,13 @@ module TimeTree
     #
     # Get the events' information after a request date.
     #
-    # @param [Integer] days
+    # @param days [Integer]
     # The number of days to get.
-    # @param [String] timezone
+    # @param timezone [String]
     # Timezone.
     # @return [Array<TimeTree::Event>]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(days: 7, timezone: 'UTC')
       raise Error, '@client is nil.' if @client.nil?
@@ -56,7 +56,7 @@ module TimeTree
     #
     # @return [Array<TimeTree::Label>]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def labels
       return @labels if defined? @labels
@@ -70,7 +70,7 @@ module TimeTree
     #
     # @return [Array<TimeTree::User>]
     # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def members
       return @members if defined? @members

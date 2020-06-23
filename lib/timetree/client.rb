@@ -13,8 +13,7 @@ module TimeTree
     # @return [Time]
     attr_reader :ratelimit_reset_at
 
-    # @param [String] token
-    # a TimeTree access token.
+    # @param token [String] a TimeTree's access token.
     def initialize(token = nil)
       @token = token || TimeTree.configuration.token
       raise Error, 'token is required.' unless ready_token?
@@ -26,10 +25,10 @@ module TimeTree
     # Get current user information.
     #
     # @return [TimeTree::User]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def current_user
-      res = get '/user'
+      res = @http_cmd.get '/user'
       raise ApiError, res if res.status != 200
 
       to_model res.body[:data]
@@ -38,12 +37,11 @@ module TimeTree
     #
     # Get a single calendar's information.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [Array<symbol>] include_relationships
+    # @param cal_id [String] calendar's id.
+    # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [TimeTree::Calendar]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar(cal_id, include_relationships: nil)
       params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
@@ -56,10 +54,10 @@ module TimeTree
     #
     # Get calendar list that current user can access.
     #
-    # @param [Array<symbol>] include_relationships
+    # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [Array<TimeTree::Calendar>]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendars(include_relationships: nil)
       params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
@@ -73,10 +71,9 @@ module TimeTree
     #
     # Get a calendar's label information used in event.
     #
-    # @param [String] cal_id
-    # calendar's id.
+    # @param cal_id [String] calendar's id.
     # @return [Array<TimeTree::Label>]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_labels(cal_id)
       res = @http_cmd.get "/calendars/#{cal_id}/labels"
@@ -88,10 +85,9 @@ module TimeTree
     #
     # Get a calendar's member information.
     #
-    # @param [String] cal_id
-    # calendar's id.
+    # @param cal_id [String] calendar's id.
     # @return [Array<TimeTree::User>]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_members(cal_id)
       res = @http_cmd.get "/calendars/#{cal_id}/members"
@@ -103,14 +99,12 @@ module TimeTree
     #
     # Get the event's information.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [String] event_id
-    # event's id.
-    # @param [Array<symbol>] include_relationships
+    # @param cal_id [String] calendar's id.
+    # @param event_id [String] event's id.
+    # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [TimeTree::Event]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(cal_id, event_id, include_relationships: nil)
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
@@ -125,16 +119,13 @@ module TimeTree
     #
     # Get the events' information after a request date.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [Integer] days
-    # The number of days to get.
-    # @param [String] timezone
-    # Timezone.
-    # @param [Array<symbol>] include_relationships
+    # @param cal_id[String] calendar's id.
+    # @param days [Integer] The number of days to get.
+    # @param timezone [String] Timezone.
+    # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [Array<TimeTree::Event>]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(cal_id, days: 7, timezone: 'UTC', include_relationships: nil)
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
@@ -153,12 +144,10 @@ module TimeTree
     #
     # Creates an event to the calendar.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [Hash] params
-    # TimeTree request body format.
+    # @param cal_id [String] calendar's id.
+    # @param params [Hash] TimeTree request body format.
     # @return [TimeTree::Event]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_event(cal_id, params)
       res = @http_cmd.post "/calendars/#{cal_id}/events", params
@@ -172,14 +161,12 @@ module TimeTree
     #
     # Updates an event.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [String] event_id
-    # event's id.
-    # @param [Hash] params
+    # @param cal_id [String] calendar's id.
+    # @param event_id [String] event's id.
+    # @param params [Hash]
     # event's information specified in TimeTree request body format.
     # @return [TimeTree::Event]
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update_event(cal_id, event_id, params)
       res = @http_cmd.put "/calendars/#{cal_id}/events/#{event_id}", params
@@ -193,12 +180,10 @@ module TimeTree
     #
     # Deletes an event.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [String] event_id
-    # event's id.
+    # @param cal_id [String] calendar's id.
+    # @param event_id [String] event's id.
     # @return [true] if the operation succeeded.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete_event(cal_id, event_id)
       res = @http_cmd.delete "/calendars/#{cal_id}/events/#{event_id}"
@@ -210,11 +195,9 @@ module TimeTree
     #
     # Creates comment to an event.
     #
-    # @param [String] cal_id
-    # calendar's id.
-    # @param [String] event_id
-    # event's id.
-    # @param [Hash] params
+    # @param cal_id [String] calendar's id.
+    # @param event_id [String] event's id.
+    # @param params [Hash]
     # comment's information specified in TimeTree request body format.
     # @return [TimeTree::Activity]
     # @raise [TimeTree::ApiError] if the nhttp response status is not success.
@@ -243,7 +226,7 @@ module TimeTree
     #
     # update ratelimit properties
     #
-    # @param [Faraday::Response] res
+    # @param res [Faraday::Response]
     # apis http response.
     def update_ratelimit(res)
       limit = res.headers['x-ratelimit-limit']

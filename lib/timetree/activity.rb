@@ -25,7 +25,7 @@ module TimeTree
     # @raise [TimeTree::Error] if @client is not set.
     # @raise [TimeTree::Error] if the calendar_id property is not set.
     # @raise [TimeTree::Error] if the event_id property is not set.
-    # @raise [TimeTree::ApiError] if the http response status is not success.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
       raise Error, '@client is nil.' if @client.nil?
@@ -39,6 +39,7 @@ module TimeTree
     # convert to a TimeTree request body format.
     #
     # @return [Hash]
+    # @since 0.0.1
     def data_params
       {
         data: { attributes: { content: content } }
