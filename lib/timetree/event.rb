@@ -17,8 +17,8 @@ module TimeTree
     attr_accessor :end_at
     # @return [String]
     attr_accessor :end_timezone
-    # @return [String]
-    attr_accessor :recurrences
+    # @return [Array<String>]
+    attr_accessor :recurrence
     # @return [String]
     attr_accessor :recurring_uuid
     # @return [String]

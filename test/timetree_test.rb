@@ -84,6 +84,18 @@ class ClientTest < Minitest::Test
     assert_ev001 ev
   end
 
+  def test_fetch_recurrence_event
+    ev_res_body = load_test_data('event_004_recurrence_child.json')
+    add_stub_request(:get, "#{HOST}/calendars/CAL001/events/EV004_CHILD", res_body: ev_res_body)
+    ev = @client.event 'CAL001', 'EV004_CHILD', include_relationships: {}
+    assert_ev004_child ev
+
+    ev_res_body = load_test_data('event_004_recurrence_parent.json')
+    add_stub_request(:get, "#{HOST}/calendars/CAL001/events/EV004_PARENT", res_body: ev_res_body)
+    ev = @client.event 'CAL001', 'EV004_PARENT', include_relationships: {}
+    assert_ev004_parent ev
+  end
+
   def test_fetch_event_with_include_options
     ev_res_body = load_test_data('event_001_include.json')
     add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV001(\?.*)?}, res_body: ev_res_body)
@@ -305,7 +317,7 @@ class ClientTest < Minitest::Test
     assert_equal 'Asia/Tokyo', ev.start_timezone
     assert_equal Time.parse('2020-06-20T11:00:00.000Z').to_i, ev.end_at.to_i
     assert_equal 'Asia/Tokyo', ev.end_timezone
-    assert_nil ev.recurrences
+    assert_nil ev.recurrence
     assert_nil ev.recurring_uuid
     assert_nil ev.description
     assert_equal 'EV001 Location', ev.location
@@ -356,7 +368,7 @@ class ClientTest < Minitest::Test
     assert_equal 'UTC', ev.start_timezone
     assert_equal Time.parse('2020-06-21T00:00:00.000Z').to_i, ev.end_at.to_i
     assert_equal 'UTC', ev.end_timezone
-    assert_nil ev.recurrences
+    assert_nil ev.recurrence
     assert_equal 'ABCDE12345', ev.recurring_uuid
     assert_equal 'EV002 Description', ev.description
     assert_equal 'EV002 Location', ev.location
@@ -407,13 +419,115 @@ class ClientTest < Minitest::Test
     assert_equal 'Asia/Tokyo', ev.start_timezone
     assert_equal Time.parse('2020-06-22T02:00:00.000Z').to_i, ev.end_at.to_i
     assert_equal 'Asia/Tokyo', ev.end_timezone
-    assert_nil ev.recurrences
+    assert_nil ev.recurrence
     assert_nil ev.recurring_uuid
     assert_equal 'EV003 Description', ev.description
     assert_equal 'Los Angeles', ev.location
     assert_equal 'https://github.com/', ev.url
     assert_equal Time.parse('2020-06-21T00:07:23.059Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-21T00:07:22.852Z').to_i, ev.created_at.to_i
+    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001,2', ev.relationships[:label][:id]
+    assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
+    attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
+    assert_equal %w[CAL001,USER001], attendee_ids
+    if include_option
+      creator = ev.creator
+      assert_equal 'CAL001,USER001', creator.id
+      assert_equal 'user', creator.type
+      assert_equal 'USER001 Name', creator.name
+      assert_equal 'USER001 Description', creator.description
+      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
+
+      label = ev.label
+      assert_equal 'CAL001,2', label.id
+      assert_equal 'label', label.type
+      assert_equal 'Modern cyan', label.name
+      assert_equal '#3dc2c8', label.color
+
+      attendees = ev.attendees
+      assert_equal 1, ev.attendees.length
+      att1 = attendees[0]
+      assert_equal 'CAL001,USER001', att1.id
+      assert_equal 'user', att1.type
+      assert_equal 'USER001 Name', att1.name
+      assert_equal 'USER001 Description', att1.description
+      assert_equal 'https://attachments.timetreeapp.com/USER001.png', att1.image_url
+    else
+      assert_nil ev.creator
+      assert_nil ev.label
+      assert_nil ev.attendees
+    end
+  end
+
+  def assert_ev004_child(ev, include_option: false, skip_assert_id: false)
+    assert_equal 'EV004_CHILD', ev.id unless skip_assert_id
+    assert_equal 'event', ev.type
+    assert_equal 'EV004_CHILD Title Recurrence', ev.title
+    assert_equal 'schedule', ev.category
+    assert_equal false, ev.all_day
+    assert_equal Time.parse('2020-06-24T03:00:00.000Z').to_i, ev.start_at.to_i
+    assert_equal 'Asia/Tokyo', ev.start_timezone
+    assert_equal Time.parse('2020-06-24T03:30:00.000Z').to_i, ev.end_at.to_i
+    assert_equal 'Asia/Tokyo', ev.end_timezone
+    assert_nil ev.recurrence
+    assert_equal 'EV004_PARENT', ev.recurring_uuid
+    assert_nil ev.description
+    assert_equal '', ev.location
+    assert_nil ev.url
+    assert_equal Time.parse('2020-06-24T01:33:16.564Z').to_i, ev.updated_at.to_i
+    assert_equal Time.parse('2020-06-24T01:33:16.555Z').to_i, ev.created_at.to_i
+    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001,2', ev.relationships[:label][:id]
+    assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
+    attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
+    assert_equal %w[CAL001,USER001], attendee_ids
+    if include_option
+      creator = ev.creator
+      assert_equal 'CAL001,USER001', creator.id
+      assert_equal 'user', creator.type
+      assert_equal 'USER001 Name', creator.name
+      assert_equal 'USER001 Description', creator.description
+      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
+
+      label = ev.label
+      assert_equal 'CAL001,2', label.id
+      assert_equal 'label', label.type
+      assert_equal 'Modern cyan', label.name
+      assert_equal '#3dc2c8', label.color
+
+      attendees = ev.attendees
+      assert_equal 1, ev.attendees.length
+      att1 = attendees[0]
+      assert_equal 'CAL001,USER001', att1.id
+      assert_equal 'user', att1.type
+      assert_equal 'USER001 Name', att1.name
+      assert_equal 'USER001 Description', att1.description
+      assert_equal 'https://attachments.timetreeapp.com/USER001.png', att1.image_url
+    else
+      assert_nil ev.creator
+      assert_nil ev.label
+      assert_nil ev.attendees
+    end
+  end
+
+  def assert_ev004_parent(ev, include_option: false, skip_assert_id: false)
+    assert_equal 'EV004_PARENT', ev.id unless skip_assert_id
+    assert_equal 'event', ev.type
+    assert_equal 'EV004_PARENT Title Recurrence', ev.title
+    assert_equal 'schedule', ev.category
+    assert_equal false, ev.all_day
+    assert_equal Time.parse('2020-06-17T03:00:00.000Z').to_i, ev.start_at.to_i
+    assert_equal 'Asia/Tokyo', ev.start_timezone
+    assert_equal Time.parse('2020-06-17T03:30:00.000Z').to_i, ev.end_at.to_i
+    assert_equal 'Asia/Tokyo', ev.end_timezone
+    assert_equal ['RRULE:FREQ=DAILY', 'EXDATE:20200624T030000Z'], ev.recurrence
+    assert_nil ev.recurring_uuid
+    assert_nil ev.description
+    assert_equal '', ev.location
+    assert_nil ev.url
+    assert_equal Time.parse('2020-06-24T01:33:16.507Z').to_i, ev.updated_at.to_i
+    assert_equal Time.parse('2020-06-16T00:13:00.860Z').to_i, ev.created_at.to_i
     assert_equal 'CAL001', ev.calendar_id
     assert_equal 'CAL001,2', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
