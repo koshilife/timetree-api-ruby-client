@@ -1,4 +1,4 @@
-# Simple TimeTree apis client
+# Simple TimeTree APIs client
 
 [![Gem Version](https://badge.fury.io/rb/timetree.svg)](http://badge.fury.io/rb/timetree)
 
@@ -24,61 +24,60 @@ Or install it yourself as:
 
 ## Usage
 
-The Api client needs access token.
-Set `access_token` to the value you got by above:
+The APIs client needs access token.
+Set a `token` variable to the value you got by above:
 
 ```ruby
-# using configure
+# set token by TimeTree.configure methods.
 TimeTree.configure do |config|
   config.token = '<YOUR_ACCESS_TOKEN>'
 end
 client = TimeTree::Client.new
 
-# using initializer
+# set token by TimeTree::Client initializer.
 client = TimeTree::Client.new('<YOUR_ACCESS_TOKEN>')
 
-# get a current user's information
+# get a current user's information.
 user = client.current_user
 => #<TimeTree::User id:xxx_u001>
 user.name
-=> "USER Name 001"
+=> "USER Name"
 
-# get current user's calendars
+# get current user's calendars.
 cals = client.calendars
 => [#<TimeTree::Calendar id:xxx_cal001>, #<TimeTree::Calendar id:xxx_cal002>, ...]
-
 cal = cals.first
 cal.name
-=> "Calendar Name 001"
+=> "Calendar Name"
 
-# get upcoming events on the calendar
+# get upcoming events on the calendar.
 evs = cal.upcoming_events
 => [#<TimeTree::Event id:xxx_ev001>, #<TimeTree::Event id:xxx_ev002>, ...]
 ev = evs.first
 ev.title
-=> "Event Name 001"
+=> "Event Title"
 
-# updates an event
+# updates an event.
 ev.title += ' Updated'
 ev.start_at = Time.parse('2020-06-20 09:00 +09:00')
 ev.end_at = Time.parse('2020-06-20 10:00 +09:00')
 ev.update
 => #<TimeTree::Event id:xxx_ev001>
 
-# creates an event
+# creates an event.
 copy_ev = ev.dup
 new_ev = copy_ev.create
-=> #<TimeTree::Event id:xxx_newev001>
+=> #<TimeTree::Event id:xxx_new_ev001>
 
-# deletes an event
+# deletes an event.
 ev.delete
 => true
 
-# creates comment to an event
-ev.create_comment 'HOGE HOGE message.'
+# creates a comment to an event.
+ev.create_comment 'Hi there!'
 => #<TimeTree::Activity id:xxx_act001>
 
-# check apis error response
+# handles APIs error.
 begin
   ev.delete
   ev.delete # 404 Error occured.
