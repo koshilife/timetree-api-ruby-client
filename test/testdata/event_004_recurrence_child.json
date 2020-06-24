@@ -1,0 +1,44 @@
+{
+  "data": {
+    "id": "EV004_CHILD",
+    "type": "event",
+    "attributes": {
+      "title": "EV004_CHILD Title Recurrence",
+      "all_day": false,
+      "start_at": "2020-06-24T03:00:00.000Z",
+      "start_timezone": "Asia/Tokyo",
+      "end_at": "2020-06-24T03:30:00.000Z",
+      "end_timezone": "Asia/Tokyo",
+      "location": "",
+      "url": null,
+      "updated_at": "2020-06-24T01:33:16.564Z",
+      "created_at": "2020-06-24T01:33:16.555Z",
+      "category": "schedule",
+      "description": null,
+      "recurrence": null,
+      "recurring_uuid": "EV004_PARENT"
+    },
+    "relationships": {
+      "label": {
+        "data": {
+          "id": "CAL001,2",
+          "type": "label"
+        }
+      },
+      "creator": {
+        "data": {
+          "id": "CAL001,USER001",
+          "type": "user"
+        }
+      },
+      "attendees": {
+        "data": [
+          {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        ]
+      }
+    }
+  }
+}
