@@ -94,8 +94,6 @@ TimeTree.configuration.logger.level = :debug
 >> client.event 'cal_id_001', 'event_id_001_not_found'
 I, [2020-06-24T10:05:07.294807]  INFO -- : GET https://timetreeapis.com/calendars/cal_id_001/events/event_id_001_not_found?include=creator%2Clabel%2Cattendees
 D, [2020-06-24T10:05:07.562038] DEBUG -- : Response status:404, body:{:type=>"https://developers.timetreeapp.com/en/docs/api#client-failure", :title=>"Not Found", :status=>404, :errors=>"Event not found"}
-Traceback (most recent call last):
-TimeTree::ApiError (TimeTree::ApiError)
 ```
 
 ## Contributing
