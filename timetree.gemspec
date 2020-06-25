@@ -37,4 +37,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest-reporters', '~> 1.4.2'
   spec.add_development_dependency 'rake', '~> 12.0'
   spec.add_development_dependency 'webmock', '~> 3.7.6'
+  spec.add_development_dependency 'simplecov', '~> 0.18.5'
 end
