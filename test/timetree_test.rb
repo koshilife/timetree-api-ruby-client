@@ -11,6 +11,26 @@ class ClientTest < Minitest::Test
     @client = TimeTree::Client.new('token')
   end
 
+  def test_configure
+    TimeTree.configure do |config|
+      config.token = 'token_from_configure'
+    end
+    client = TimeTree::Client.new
+    assert_equal 'token_from_configure', client.token
+  end
+
+  def test_client_inspect
+    assert_equal "\#<#{@client.class}:#{@client.object_id}>", @client.inspect
+    cal = fetch_cal001
+    ratelimit_info = "ratelimit:#{@client.ratelimit_remaining}/#{@client.ratelimit_limit}, reset_at:#{@client.ratelimit_reset_at.strftime('%m/%d %R')}"
+    assert_equal "\#<#{@client.class}:#{@client.object_id} #{ratelimit_info}>", @client.inspect
+  end
+
+  def test_model_inspect
+    cal = fetch_cal001
+    assert_equal "\#<#{cal.class}:#{cal.object_id} id:#{cal.id}>", cal.inspect
+  end
+
   def test_fetch_current_user
     user_res_body = load_test_data('user_001.json')
     add_stub_request(:get, "#{HOST}/user", res_body: user_res_body)
@@ -82,6 +102,14 @@ class ClientTest < Minitest::Test
   def test_fetch_event
     ev = fetch_ev001
     assert_ev001 ev
+  end
+
+  def test_fetch_event_from_calendar_obj
+    cal = fetch_cal001
+    ev_res_body = load_test_data('event_001_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV001(\?.*)?}, res_body: ev_res_body)
+    ev = cal.event 'EV001'
+    assert_ev001 ev, include_option: true
   end
 
   def test_fetch_recurrence_event
