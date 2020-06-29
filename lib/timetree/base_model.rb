@@ -50,9 +50,9 @@ module TimeTree
       end
     end
 
-    def initialize(id:, type:, client: nil, attributes: nil, relationships: nil, included: nil)
-      @id = id
+    def initialize(type:, id: nil, client: nil, attributes: nil, relationships: nil, included: nil)
       @type = type
+      @id = id
       @client = client
       set_attributes attributes
       set_relationships relationships, included
@@ -63,6 +63,10 @@ module TimeTree
     end
 
     private
+
+    def check_client
+      raise Error, '@client is nil.' if @client.nil?
+    end
 
     def to_model(data)
       self.class.to_model data, client: @client

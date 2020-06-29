@@ -1,0 +1,6 @@
+{
+  "type": "https://developers.timetreeapp.com/en/docs/api#client-failure",
+  "title": "Not Found",
+  "status": 404,
+  "errors": "Event not found"
+}

@@ -1,3 +1,7 @@
+# 0.1.3
+
+- refs #7 #9 make the code coverage 100%.
+
 # 0.1.2
 
 - refs #1 fix typo Event#recurrences to recurrence

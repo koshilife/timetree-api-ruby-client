@@ -1,224 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
-
-require 'time'
-
-class ClientTest < Minitest::Test
-  HOST = TimeTree::Client::API_HOST
-
-  def setup
-    @client = TimeTree::Client.new('token')
-  end
-
-  def test_fetch_current_user
-    user_res_body = load_test_data('user_001.json')
-    add_stub_request(:get, "#{HOST}/user", res_body: user_res_body)
-    user = @client.current_user
-    assert_equal 600, @client.ratelimit_limit
-    assert_equal 599, @client.ratelimit_remaining
-    assert_equal Time, @client.ratelimit_reset_at.class
-    assert_user001 user
-  end
-
-  def test_fetch_calendars
-    cals_res_body = load_test_data('calendars_001.json')
-    add_stub_request(:get, %r{#{HOST}/calendars(\?.*)?}, res_body: cals_res_body)
-    cals = @client.calendars
-    assert_equal 2, cals.length
-
-    cal1 = cals[0]
-    assert_cal001 cal1
-    cal2 = cals[1]
-    assert_cal002 cal2
-
-    # fetch related labels data
-    labels_res_body = load_test_data('calendar_labels_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/#{cal1.id}/labels", res_body: labels_res_body)
-    labels = cal1.labels
-    assert_cal001_labels labels
-
-    # fetch relation labels
-    mems_res_body = load_test_data('calendar_members_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/#{cal1.id}/members", res_body: mems_res_body)
-    mems = cal1.members
-    assert_cal001_members mems
-  end
-
-  def test_fetch_calendars_with_include_options
-    cals_res_body = load_test_data('calendars_001_include.json')
-    add_stub_request(:get, %r{#{HOST}/calendars(\?.*)?}, res_body: cals_res_body)
-    cals = @client.calendars
-    assert_equal 600, @client.ratelimit_limit
-    assert_equal 599, @client.ratelimit_remaining
-    assert_equal Time, @client.ratelimit_reset_at.class
-    assert_equal 2, cals.length
-
-    cal1 = cals[0]
-    assert_cal001 cal1
-    assert_cal001_labels cal1.labels
-    assert_cal001_members cal1.members
-    cal2 = cals[1]
-    assert_cal002 cal2
-    assert_cal002_labels cal2.labels
-    assert_cal002_members cal2.members
-  end
-
-  def test_fetch_calendar
-    cal = fetch_cal001
-    assert_cal001 cal
-  end
-
-  def test_fetch_calendar_with_include_options
-    cal_res_body = load_test_data('calendar_001_include.json')
-    add_stub_request(:get, %r{#{HOST}/calendars/CAL001(\?.*)?}, res_body: cal_res_body)
-    cal = @client.calendar 'CAL001'
-
-    assert_cal001 cal
-    assert_cal001_labels cal.labels
-    assert_cal001_members cal.members
-  end
-
-  def test_fetch_event
-    ev = fetch_ev001
-    assert_ev001 ev
-  end
-
-  def test_fetch_recurrence_event
-    ev_res_body = load_test_data('event_004_recurrence_child.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001/events/EV004_CHILD", res_body: ev_res_body)
-    ev = @client.event 'CAL001', 'EV004_CHILD', include_relationships: {}
-    assert_ev004_child ev
-
-    ev_res_body = load_test_data('event_004_recurrence_parent.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001/events/EV004_PARENT", res_body: ev_res_body)
-    ev = @client.event 'CAL001', 'EV004_PARENT', include_relationships: {}
-    assert_ev004_parent ev
-  end
-
-  def test_fetch_event_with_include_options
-    ev_res_body = load_test_data('event_001_include.json')
-    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV001(\?.*)?}, res_body: ev_res_body)
-    ev = @client.event 'CAL001', 'EV001'
-    assert_ev001 ev, include_option: true
-  end
-
-  def test_fetch_upcoming_event
-    cal = fetch_cal001
-    evs_res_body = load_test_data('events_001.json')
-    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/upcoming_events\?days=3(.*)?(timezone=Asia/Tokyo)(.*)?}, res_body: evs_res_body)
-    evs = cal.upcoming_events(days: 3, timezone: 'Asia/Tokyo')
-    assert_equal 3, evs.length
-    assert_ev001 evs[0]
-    assert_ev002 evs[1]
-    assert_ev003 evs[2]
-  end
-
-  def test_fetch_upcoming_event_with_include_options
-    cal_res_body = load_test_data('calendar_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001", res_body: cal_res_body)
-    cal = @client.calendar 'CAL001', include_relationships: {}
-    evs_res_body = load_test_data('events_001_include.json')
-    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/upcoming_events\?days=7(.*)?(timezone=UTC)(.*)?}, res_body: evs_res_body)
-    evs = cal.upcoming_events
-    assert_equal 3, evs.length
-    assert_ev001 evs[0], include_option: true
-    assert_ev002 evs[1], include_option: true
-    assert_ev003 evs[2], include_option: true
-  end
-
-  def test_create_event
-    ev = fetch_ev001
-
-    new_ev = ev.dup
-    new_title = 'NEW_EV001 Title'
-    new_ev.title = new_title
-
-    ev_res_body = load_test_data('event_001_create.json')
-    add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: new_ev.data_params, res_status: 201, res_body: ev_res_body)
-    new_ev = new_ev.create
-    assert_equal 'NEW_EV001', new_ev.id
-    assert_equal new_title, new_ev.title
-
-    new_ev.title = ev.title
-    assert_ev001 new_ev, skip_assert_id: true
-  end
-
-  def test_update_event
-    ev = fetch_ev001
-    before_ev = ev.dup
-    update_title = 'EV001 Title Updated'
-    ev.title = update_title
-    ev_res_body = load_test_data('event_001_update.json')
-    add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: ev.data_params, res_body: ev_res_body)
-    updated_ev = ev.update
-    assert_equal update_title, updated_ev.title
-
-    updated_ev.title = before_ev.title
-    assert_ev001 updated_ev
-  end
-
-  def test_delete_event
-    ev = fetch_ev001
-    add_stub_request(:delete, "#{HOST}/calendars/CAL001/events/EV001", res_status: 204)
-    assert ev.delete
-  end
-
-  def test_create_activity
-    ev = fetch_ev001
-
-    message = 'New Comment!'
-    data_params = { data: { attributes: { content: message } } }
-
-    act_res_body = load_test_data('activity_001_create.json')
-    add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: data_params, res_status: 201, res_body: act_res_body)
-
-    activity = ev.create_comment(message)
-    assert_activity001 activity
-  end
-
-  private
-
-  def default_request_headers(token = 'token')
-    { 'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => "Bearer #{token}" }
-  end
-
-  def default_response_headers
-    now = Time.new
-    {
-      'Content-Type' => 'application/json; charset=utf-8',
-      'X-RateLimit-Limit' => 600,
-      'X-RateLimit-Remaining' => 599,
-      'X-RateLimit-Reset' => (now.to_i + 60 * 10)
-    }
-  end
-
-  def add_stub_request(method, url, req_body: nil, req_headers: nil, res_status: nil, res_body: nil, res_headers: nil)
-    WebMock.enable!
-    req_headers ||= default_request_headers
-    res_headers ||= default_response_headers
-    res_status ||= 200
-    stub_request(method, url).with(body: req_body, headers: req_headers).to_return(status: res_status, body: res_body, headers: res_headers)
-  end
-
-  def load_test_data(filename)
-    filepath = File.join(File.dirname(__FILE__), 'testdata', filename)
-    file = File.new(filepath)
-    file.read
-  end
-
-  def fetch_cal001
-    cal_res_body = load_test_data('calendar_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001", res_body: cal_res_body)
-    @client.calendar 'CAL001', include_relationships: {}
-  end
-
-  def fetch_ev001
-    ev_res_body = load_test_data('event_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001/events/EV001", res_body: ev_res_body)
-    @client.event 'CAL001', 'EV001', include_relationships: {}
-  end
-
+module AssertHelper
   def assert_cal001(cal)
     assert_equal 'CAL001', cal.id
     assert_equal 'calendar', cal.type
@@ -307,10 +89,10 @@ class ClientTest < Minitest::Test
     assert_equal 'https://attachments.timetreeapp.com/USER001.png', f_mem.image_url
   end
 
-  def assert_ev001(ev, include_option: false, skip_assert_id: false)
+  def assert_ev001(ev, include_option: false, skip_assert_id: false, skip_assert_title: false)
     assert_equal 'EV001', ev.id unless skip_assert_id
     assert_equal 'event', ev.type
-    assert_equal 'EV001 Title', ev.title
+    assert_equal 'EV001 Title', ev.title unless skip_assert_title
     assert_equal 'schedule', ev.category
     assert_equal false, ev.all_day
     assert_equal Time.parse('2020-06-20T10:00:00.000Z').to_i, ev.start_at.to_i
@@ -460,8 +242,8 @@ class ClientTest < Minitest::Test
     end
   end
 
-  def assert_ev004_child(ev, include_option: false, skip_assert_id: false)
-    assert_equal 'EV004_CHILD', ev.id unless skip_assert_id
+  def assert_ev004_child(ev)
+    assert_equal 'EV004_CHILD', ev.id
     assert_equal 'event', ev.type
     assert_equal 'EV004_CHILD Title Recurrence', ev.title
     assert_equal 'schedule', ev.category
@@ -482,37 +264,13 @@ class ClientTest < Minitest::Test
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
     assert_equal %w[CAL001,USER001], attendee_ids
-    if include_option
-      creator = ev.creator
-      assert_equal 'CAL001,USER001', creator.id
-      assert_equal 'user', creator.type
-      assert_equal 'USER001 Name', creator.name
-      assert_equal 'USER001 Description', creator.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
-
-      label = ev.label
-      assert_equal 'CAL001,2', label.id
-      assert_equal 'label', label.type
-      assert_equal 'Modern cyan', label.name
-      assert_equal '#3dc2c8', label.color
-
-      attendees = ev.attendees
-      assert_equal 1, ev.attendees.length
-      att1 = attendees[0]
-      assert_equal 'CAL001,USER001', att1.id
-      assert_equal 'user', att1.type
-      assert_equal 'USER001 Name', att1.name
-      assert_equal 'USER001 Description', att1.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', att1.image_url
-    else
-      assert_nil ev.creator
-      assert_nil ev.label
-      assert_nil ev.attendees
-    end
+    assert_nil ev.creator
+    assert_nil ev.label
+    assert_nil ev.attendees
   end
 
-  def assert_ev004_parent(ev, include_option: false, skip_assert_id: false)
-    assert_equal 'EV004_PARENT', ev.id unless skip_assert_id
+  def assert_ev004_parent(ev)
+    assert_equal 'EV004_PARENT', ev.id
     assert_equal 'event', ev.type
     assert_equal 'EV004_PARENT Title Recurrence', ev.title
     assert_equal 'schedule', ev.category
@@ -533,33 +291,9 @@ class ClientTest < Minitest::Test
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
     assert_equal %w[CAL001,USER001], attendee_ids
-    if include_option
-      creator = ev.creator
-      assert_equal 'CAL001,USER001', creator.id
-      assert_equal 'user', creator.type
-      assert_equal 'USER001 Name', creator.name
-      assert_equal 'USER001 Description', creator.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
-
-      label = ev.label
-      assert_equal 'CAL001,2', label.id
-      assert_equal 'label', label.type
-      assert_equal 'Modern cyan', label.name
-      assert_equal '#3dc2c8', label.color
-
-      attendees = ev.attendees
-      assert_equal 1, ev.attendees.length
-      att1 = attendees[0]
-      assert_equal 'CAL001,USER001', att1.id
-      assert_equal 'user', att1.type
-      assert_equal 'USER001 Name', att1.name
-      assert_equal 'USER001 Description', att1.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', att1.image_url
-    else
-      assert_nil ev.creator
-      assert_nil ev.label
-      assert_nil ev.attendees
-    end
+    assert_nil ev.creator
+    assert_nil ev.label
+    assert_nil ev.attendees
   end
 
   def assert_activity001(act)
@@ -570,5 +304,38 @@ class ClientTest < Minitest::Test
     assert_equal Time.parse('2020-06-20T11:08:56.510Z').to_i, act.updated_at.to_i
     assert_equal 'CAL001', act.calendar_id
     assert_equal 'EV001', act.event_id
+  end
+
+  def assert_401_error(err)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#authentication', err.type
+    assert_equal 'Unauthorized', err.title
+    assert_equal 401, err.status
+    assert_equal "\#<#{err.class}:#{err.object_id} title:#{err.title}, status:#{err.status}>", err.inspect
+  end
+
+  def assert_404_calendar_error(err)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#get-calendarscalendar_id', err.type
+    assert_equal 'Not Found', err.title
+    assert_equal 404, err.status
+  end
+
+  def assert_404_event_error(err)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#client-failure', err.type
+    assert_equal 'Not Found', err.title
+    assert_equal 404, err.status
+    assert_equal 'Event not found', err.errors
+  end
+
+  def assert_client_nil_error(e)
+    assert_equal TimeTree::Error, e.class
+    assert_equal '@client is nil.', e.message
+  end
+
+  def assert_blank_error(e, name)
+    assert_equal TimeTree::Error, e.class
+    assert_equal "#{name} is required.", e.message
   end
 end
