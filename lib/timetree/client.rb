@@ -16,8 +16,7 @@ module TimeTree
     # @param token [String] a TimeTree's access token.
     def initialize(token = nil)
       @token = token || TimeTree.configuration.token
-      raise Error, 'token is required.' unless ready_token?
-
+      check_token
       @http_cmd = HttpCommand.new(API_HOST, self)
     end
 
@@ -44,6 +43,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar(cal_id, include_relationships: nil)
+      check_calendar_id cal_id
       params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
       res = @http_cmd.get "/calendars/#{cal_id}", params
       raise ApiError, res if res.status != 200
@@ -76,6 +76,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_labels(cal_id)
+      check_calendar_id cal_id
       res = @http_cmd.get "/calendars/#{cal_id}/labels"
       raise ApiError, res if res.status != 200
 
@@ -90,6 +91,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_members(cal_id)
+      check_calendar_id cal_id
       res = @http_cmd.get "/calendars/#{cal_id}/members"
       raise ApiError, res if res.status != 200
 
@@ -107,6 +109,8 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(cal_id, event_id, include_relationships: nil)
+      check_calendar_id cal_id
+      check_event_id event_id
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
       res = @http_cmd.get "/calendars/#{cal_id}/events/#{event_id}", params
       raise ApiError, res if res.status != 200
@@ -128,6 +132,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(cal_id, days: 7, timezone: 'UTC', include_relationships: nil)
+      check_calendar_id cal_id
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
       params.merge!(days: days, timezone: timezone)
       res = @http_cmd.get "/calendars/#{cal_id}/upcoming_events", params
@@ -150,6 +155,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_event(cal_id, params)
+      check_calendar_id cal_id
       res = @http_cmd.post "/calendars/#{cal_id}/events", params
       raise ApiError, res if res.status != 201
 
@@ -169,6 +175,8 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update_event(cal_id, event_id, params)
+      check_calendar_id cal_id
+      check_event_id event_id
       res = @http_cmd.put "/calendars/#{cal_id}/events/#{event_id}", params
       raise ApiError, res if res.status != 200
 
@@ -186,6 +194,8 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete_event(cal_id, event_id)
+      check_calendar_id cal_id
+      check_event_id event_id
       res = @http_cmd.delete "/calendars/#{cal_id}/events/#{event_id}"
       raise ApiError, res if res.status != 204
 
@@ -203,6 +213,8 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the nhttp response status is not success.
     # @since 0.0.1
     def create_activity(cal_id, event_id, params)
+      check_calendar_id cal_id
+      check_event_id event_id
       res = @http_cmd.post "/calendars/#{cal_id}/events/#{event_id}/activities", params
       raise ApiError, res if res.status != 201
 
@@ -214,10 +226,10 @@ module TimeTree
 
     def inspect
       limit_info = nil
-      if @ratelimit_limit
+      if defined?(@ratelimit_limit) && @ratelimit_limit
         limit_info = " ratelimit:#{@ratelimit_remaining}/#{@ratelimit_limit}"
       end
-      if @ratelimit_reset_at
+      if defined?(@ratelimit_reset_at) && @ratelimit_reset_at
         limit_info = "#{limit_info}, reset_at:#{@ratelimit_reset_at.strftime('%m/%d %R')}"
       end
       "\#<#{self.class}:#{object_id}#{limit_info}>"
@@ -239,12 +251,28 @@ module TimeTree
 
     private
 
-    def to_model(data, included: nil)
-      TimeTree::BaseModel.to_model data, client: self, included: included
+    def check_token
+      check_required_property(@token, 'token')
     end
 
-    def ready_token?
-      @token.is_a?(String) && !@token.empty?
+    def check_calendar_id(value)
+      check_required_property(value, 'calendar_id')
+    end
+
+    def check_event_id(value)
+      check_required_property(value, 'event_id')
+    end
+
+    def check_required_property(value, name)
+      err = Error.new "#{name} is required."
+      raise err if value.nil?
+      raise err if value.to_s.empty?
+
+      true
+    end
+
+    def to_model(data, included: nil)
+      TimeTree::BaseModel.to_model data, client: self, included: included
     end
 
     def relationships_params(relationships, default)

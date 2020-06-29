@@ -38,9 +38,9 @@ module TimeTree
     # @return [TimeTree::User]
     attr_reader :creator
     # @return [TimeTree::Label]
-    attr_reader :label
+    attr_accessor :label
     # @return [Array<TimeTree::User>]
-    attr_reader :attendees
+    attr_accessor :attendees
 
     TIME_FIELDS = %i[start_at end_at updated_at created_at].freeze
     RELATIONSHIPS = %i[creator label attendees].freeze
@@ -53,26 +53,8 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
-      raise Error, 'client is required.' if @client.nil?
-
+      check_client
       @client.create_event calendar_id, data_params
-    end
-
-    #
-    # Creates comment to the event.
-    #
-    # @return [TimeTree::Activity]
-    # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status will not success.
-    # @since 0.0.1
-    def create_comment(message)
-      raise Error, '@client is nil.' if @client.nil?
-
-      params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
-      activity = to_model params
-      return if activity.nil?
-
-      activity.create
     end
 
     #
@@ -84,9 +66,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'id is required.' if id.nil?
-
+      check_client
       @client.update_event calendar_id, id, data_params
     end
 
@@ -99,10 +79,24 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'id is required.' if id.nil?
-
+      check_client
       @client.delete_event calendar_id, id
+    end
+
+    #
+    # Creates comment to the event.
+    #
+    # @return [TimeTree::Activity]
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
+    # @since 0.0.1
+    def create_comment(message)
+      check_client
+      params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
+      activity = to_model params
+      return if activity.nil?
+
+      activity.create
     end
 
     #
