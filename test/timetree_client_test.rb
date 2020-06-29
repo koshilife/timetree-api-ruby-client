@@ -53,8 +53,8 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_fetch_calendar_with_include_options
-    cal_res_body = load_test_data('calendar_001_include.json')
-    add_stub_request(:get, %r{#{HOST}/calendars/CAL001(\?.*)?}, res_body: cal_res_body)
+    res_body = load_test_data('calendar_001_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendars/CAL001(\?.*)?}, res_body: res_body)
     cal = @client.calendar 'CAL001'
 
     assert_cal001 cal
@@ -225,17 +225,92 @@ class TimeTreeClientTest < TimeTreeBaseTest
   # test for TimeTree::Client#create_event
   #
 
+  def test_create_event
+    req_body = { data: 'hoge' }
+    res_body = load_test_data('event_001_create.json')
+    add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_status: 201, res_body: res_body)
+    ev = @client.create_event 'CAL001', req_body
+    assert_equal 'NEW_EV001', ev.id
+    assert_ev001 ev, skip_assert_id: true, skip_assert_title: true
+  end
+
+  def test_create_event_then_fail
+    req_body = { data: 'hoge' }
+    res_body = load_test_data('401.json')
+    add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_body: res_body, res_status: 401)
+    e =
+      assert_raises StandardError do
+        @client.create_event 'CAL001', req_body
+      end
+    assert_401_error e
+  end
+
   #
   # test for TimeTree::Client#update_event
   #
+
+  def test_update_event
+    req_body = { data: 'hoge' }
+    res_body = load_test_data('event_001_update.json')
+    add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body)
+    ev = @client.update_event 'CAL001', 'EV001', req_body
+    assert_equal ev.title, 'EV001 Title Updated'
+    assert_ev001 ev, skip_assert_title: true
+  end
+
+  def test_update_event_then_fail
+    req_body = { data: 'hoge' }
+    res_body = load_test_data('401.json')
+    add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body, res_status: 401)
+    e =
+      assert_raises StandardError do
+        @client.update_event 'CAL001', 'EV001', req_body
+      end
+    assert_401_error e
+  end
 
   #
   # test for TimeTree::Client#delete_event
   #
 
+  def test_delete_event
+    add_stub_request(:delete, "#{HOST}/calendars/CAL001/events/EV001", res_status: 204)
+    did_delete = @client.delete_event 'CAL001', 'EV001'
+    assert did_delete
+  end
+
+  def test_delete_event_then_fail
+    res_body = load_test_data('401.json')
+    add_stub_request(:delete, "#{HOST}/calendars/CAL001/events/EV001", res_body: res_body, res_status: 401)
+    e =
+      assert_raises StandardError do
+        @client.delete_event 'CAL001', 'EV001'
+      end
+    assert_401_error e
+  end
+
   #
   # test for TimeTree::Client#create_activity
   #
+
+  def test_create_activity
+    req_body = { data: 'hoge' }
+    res_body = load_test_data('activity_001_create.json')
+    add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 201, res_body: res_body)
+    act = @client.create_activity 'CAL001', 'EV001', req_body
+    assert_activity001 act
+  end
+
+  def test_create_activity_then_fail
+    req_body = { data: { attributes: {} } }
+    res_body = load_test_data('401.json')
+    add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 401, res_body: res_body)
+    e =
+      assert_raises StandardError do
+        @client.create_activity 'CAL001', 'EV001', req_body
+      end
+    assert_401_error e
+  end
 
   #
   # test for TimeTree::Client#inspect
@@ -247,8 +322,4 @@ class TimeTreeClientTest < TimeTreeBaseTest
     ratelimit_info = "ratelimit:#{@client.ratelimit_remaining}/#{@client.ratelimit_limit}, reset_at:#{@client.ratelimit_reset_at.strftime('%m/%d %R')}"
     assert_equal "\#<#{@client.class}:#{@client.object_id} #{ratelimit_info}>", @client.inspect
   end
-
-  #
-  # TimeTree::Client#update_ratelimit
-  #
 end

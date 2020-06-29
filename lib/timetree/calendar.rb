@@ -52,20 +52,6 @@ module TimeTree
     end
 
     #
-    # Get a calendar's label information used in event.
-    #
-    # @return [Array<TimeTree::Label>]
-    # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::ApiError] if the http response status will not success.
-    # @since 0.0.1
-    def labels
-      return @labels if defined? @labels
-      raise Error, '@client is nil.' if @client.nil?
-
-      @labels = @client.calendar_labels id
-    end
-
-    #
     # Get a calendar's member information.
     #
     # @return [Array<TimeTree::User>]
@@ -77,6 +63,20 @@ module TimeTree
       raise Error, '@client is nil.' if @client.nil?
 
       @members = @client.calendar_members id
+    end
+
+    #
+    # Get a calendar's label information used in event.
+    #
+    # @return [Array<TimeTree::Label>]
+    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::ApiError] if the http response status will not success.
+    # @since 0.0.1
+    def labels
+      return @labels if defined? @labels
+      raise Error, '@client is nil.' if @client.nil?
+
+      @labels = @client.calendar_labels id
     end
   end
 end

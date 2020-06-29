@@ -89,10 +89,10 @@ module AssertHelper
     assert_equal 'https://attachments.timetreeapp.com/USER001.png', f_mem.image_url
   end
 
-  def assert_ev001(ev, include_option: false, skip_assert_id: false)
+  def assert_ev001(ev, include_option: false, skip_assert_id: false, skip_assert_title: false)
     assert_equal 'EV001', ev.id unless skip_assert_id
     assert_equal 'event', ev.type
-    assert_equal 'EV001 Title', ev.title
+    assert_equal 'EV001 Title', ev.title unless skip_assert_title
     assert_equal 'schedule', ev.category
     assert_equal false, ev.all_day
     assert_equal Time.parse('2020-06-20T10:00:00.000Z').to_i, ev.start_at.to_i
@@ -307,24 +307,25 @@ module AssertHelper
   end
 
   def assert_401_error(err)
-    assert_equal(TimeTree::ApiError, err.class)
-    assert_equal('https://developers.timetreeapp.com/en/docs/api#authentication', err.type)
-    assert_equal('Unauthorized', err.title)
-    assert_equal(401, err.status)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#authentication', err.type
+    assert_equal 'Unauthorized', err.title
+    assert_equal 401, err.status
+    assert_equal "\#<#{err.class}:#{err.object_id} title:#{err.title}, status:#{err.status}>", err.inspect
   end
 
   def assert_404_calendar_error(err)
-    assert_equal(TimeTree::ApiError, err.class)
-    assert_equal('https://developers.timetreeapp.com/en/docs/api#get-calendarscalendar_id', err.type)
-    assert_equal('Not Found', err.title)
-    assert_equal(404, err.status)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#get-calendarscalendar_id', err.type
+    assert_equal 'Not Found', err.title
+    assert_equal 404, err.status
   end
 
   def assert_404_event_error(err)
-    assert_equal(TimeTree::ApiError, err.class)
-    assert_equal('https://developers.timetreeapp.com/en/docs/api#client-failure', err.type)
-    assert_equal('Not Found', err.title)
-    assert_equal(404, err.status)
-    assert_equal('Event not found', err.errors)
+    assert_equal TimeTree::ApiError, err.class
+    assert_equal 'https://developers.timetreeapp.com/en/docs/api#client-failure', err.type
+    assert_equal 'Not Found', err.title
+    assert_equal 404, err.status
+    assert_equal 'Event not found', err.errors
   end
 end
