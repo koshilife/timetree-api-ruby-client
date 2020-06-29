@@ -72,6 +72,23 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_404_calendar_error e
   end
 
+  def test_fetch_calendar_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.calendar nil
+      end
+    assert_blank_error e, 'calendar_id'
+    e =
+      assert_raises StandardError do
+        @client.calendar ''
+      end
+    assert_blank_error e, 'calendar_id'
+  end
+
+  #
+  # test for TimeTree::Client#calendars
+  #
+
   def test_fetch_calendars
     cals = fetch_calendars
     assert_equal 2, cals.length
@@ -125,6 +142,14 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_401_error e
   end
 
+  def test_fetch_calendar_members_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.calendar_members nil
+      end
+    assert_blank_error e, 'calendar_id'
+  end
+
   #
   # test for TimeTree::Client#calendar_labels
   #
@@ -144,6 +169,14 @@ class TimeTreeClientTest < TimeTreeBaseTest
         @client.calendar_labels 'CAL001'
       end
     assert_401_error e
+  end
+
+  def test_fetch_calendar_labels_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.calendar_labels nil
+      end
+    assert_blank_error e, 'calendar_id'
   end
 
   #
@@ -184,6 +217,20 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_404_event_error e
   end
 
+  def test_fetch_event_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.event nil, 'EV001'
+      end
+    assert_blank_error e, 'calendar_id'
+
+    e =
+      assert_raises StandardError do
+        @client.event 'CAL001', nil
+      end
+    assert_blank_error e, 'event_id'
+  end
+
   #
   # test for TimeTree::Client#upcoming_events
   #
@@ -221,6 +268,14 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_401_error e
   end
 
+  def test_fetch_upcoming_event_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.upcoming_events nil
+      end
+    assert_blank_error e, 'calendar_id'
+  end
+
   #
   # test for TimeTree::Client#create_event
   #
@@ -243,6 +298,14 @@ class TimeTreeClientTest < TimeTreeBaseTest
         @client.create_event 'CAL001', req_body
       end
     assert_401_error e
+  end
+
+  def test_create_event_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.create_event nil, {}
+      end
+    assert_blank_error e, 'calendar_id'
   end
 
   #
@@ -269,6 +332,20 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_401_error e
   end
 
+  def test_update_event_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.update_event nil, 'EV001', {}
+      end
+    assert_blank_error e, 'calendar_id'
+
+    e =
+      assert_raises StandardError do
+        @client.update_event 'CAL001', nil, {}
+      end
+    assert_blank_error e, 'event_id'
+  end
+
   #
   # test for TimeTree::Client#delete_event
   #
@@ -287,6 +364,20 @@ class TimeTreeClientTest < TimeTreeBaseTest
         @client.delete_event 'CAL001', 'EV001'
       end
     assert_401_error e
+  end
+
+  def test_delete_event_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.delete_event nil, 'EV001'
+      end
+    assert_blank_error e, 'calendar_id'
+
+    e =
+      assert_raises StandardError do
+        @client.delete_event 'CAL001', nil
+      end
+    assert_blank_error e, 'event_id'
   end
 
   #
@@ -310,6 +401,20 @@ class TimeTreeClientTest < TimeTreeBaseTest
         @client.create_activity 'CAL001', 'EV001', req_body
       end
     assert_401_error e
+  end
+
+  def test_create_activity_then_fail_because_id_is_blank
+    e =
+      assert_raises StandardError do
+        @client.create_activity nil, 'EV001', {}
+      end
+    assert_blank_error e, 'calendar_id'
+
+    e =
+      assert_raises StandardError do
+        @client.create_activity 'CAL001', nil, {}
+      end
+    assert_blank_error e, 'event_id'
   end
 
   #

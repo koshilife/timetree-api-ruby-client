@@ -33,8 +33,7 @@ class TimeTreeCalendarTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_cal.event 'EV001'
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
+    assert_client_nil_error e
   end
 
   #
@@ -56,28 +55,7 @@ class TimeTreeCalendarTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_cal.upcoming_events
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
-  end
-
-  #
-  # test for TimeTree::Calendar#labels
-  #
-
-  def test_fetch_labels
-    res_body = load_test_data('calendar_labels_001.json')
-    add_stub_request(:get, "#{HOST}/calendars/CAL001/labels", res_body: res_body)
-    labels = @cal.labels
-    assert_cal001_labels labels
-  end
-
-  def test_fetch_labels_then_fail
-    e =
-      assert_raises StandardError do
-        @no_client_cal.labels
-      end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
+    assert_client_nil_error e
   end
 
   #
@@ -96,7 +74,25 @@ class TimeTreeCalendarTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_cal.members
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
+    assert_client_nil_error e
+  end
+
+  #
+  # test for TimeTree::Calendar#labels
+  #
+
+  def test_fetch_labels
+    res_body = load_test_data('calendar_labels_001.json')
+    add_stub_request(:get, "#{HOST}/calendars/CAL001/labels", res_body: res_body)
+    labels = @cal.labels
+    assert_cal001_labels labels
+  end
+
+  def test_fetch_labels_then_fail
+    e =
+      assert_raises StandardError do
+        @no_client_cal.labels
+      end
+    assert_client_nil_error e
   end
 end

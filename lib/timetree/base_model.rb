@@ -64,6 +64,10 @@ module TimeTree
 
     private
 
+    def check_client
+      raise Error, '@client is nil.' if @client.nil?
+    end
+
     def to_model(data)
       self.class.to_model data, client: @client
     end

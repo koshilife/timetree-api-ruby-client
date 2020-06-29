@@ -28,10 +28,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'calendar_id is required.' if calendar_id.nil?
-      raise Error, 'event_id is required.' if event_id.nil?
-
+      check_client
       @client.create_activity calendar_id, event_id, data_params
     end
 

@@ -53,8 +53,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
-      raise Error, '@client is nil.' if @client.nil?
-
+      check_client
       @client.create_event calendar_id, data_params
     end
 
@@ -67,9 +66,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'id is required.' if id.nil?
-
+      check_client
       @client.update_event calendar_id, id, data_params
     end
 
@@ -82,9 +79,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'id is required.' if id.nil?
-
+      check_client
       @client.delete_event calendar_id, id
     end
 
@@ -96,9 +91,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_comment(message)
-      raise Error, '@client is nil.' if @client.nil?
-      raise Error, 'id is required.' if id.nil?
-
+      check_client
       params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
       activity = to_model params
       return if activity.nil?

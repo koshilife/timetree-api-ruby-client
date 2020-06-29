@@ -41,8 +41,7 @@ class TimeTreeEventTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_ev.create
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
+    assert_client_nil_error e
   end
 
   #
@@ -64,17 +63,7 @@ class TimeTreeEventTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_ev.update
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
-  end
-
-  def test_update_then_fail_because_no_id
-    e =
-      assert_raises StandardError do
-        @no_id_ev.update
-      end
-    assert_equal TimeTree::Error, e.class
-    assert_equal 'id is required.', e.message
+    assert_client_nil_error e
   end
 
   #
@@ -91,17 +80,7 @@ class TimeTreeEventTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_ev.delete
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
-  end
-
-  def test_delete_then_fail_because_no_id
-    e =
-      assert_raises StandardError do
-        @no_id_ev.delete
-      end
-    assert_equal TimeTree::Error, e.class
-    assert_equal 'id is required.', e.message
+    assert_client_nil_error e
   end
 
   #
@@ -123,17 +102,7 @@ class TimeTreeEventTest < TimeTreeBaseTest
       assert_raises StandardError do
         @no_client_ev.create_comment 'comment1'
       end
-    assert_equal TimeTree::Error, e.class
-    assert_equal '@client is nil.', e.message
-  end
-
-  def test_create_comment_then_fail_because_no_id
-    e =
-      assert_raises StandardError do
-        @no_id_ev.create_comment 'comment1'
-      end
-    assert_equal TimeTree::Error, e.class
-    assert_equal 'id is required.', e.message
+    assert_client_nil_error e
   end
 
   #

@@ -328,4 +328,14 @@ module AssertHelper
     assert_equal 404, err.status
     assert_equal 'Event not found', err.errors
   end
+
+  def assert_client_nil_error(e)
+    assert_equal TimeTree::Error, e.class
+    assert_equal '@client is nil.', e.message
+  end
+
+  def assert_blank_error(e, name)
+    assert_equal TimeTree::Error, e.class
+    assert_equal "#{name} is required.", e.message
+  end
 end

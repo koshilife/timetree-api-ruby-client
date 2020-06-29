@@ -29,8 +29,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(event_id)
-      raise Error, '@client is nil.' if @client.nil?
-
+      check_client
       @client.event id, event_id
     end
 
@@ -46,8 +45,7 @@ module TimeTree
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(days: 7, timezone: 'UTC')
-      raise Error, '@client is nil.' if @client.nil?
-
+      check_client
       @client.upcoming_events id, days: days, timezone: timezone
     end
 
@@ -60,8 +58,8 @@ module TimeTree
     # @since 0.0.1
     def members
       return @members if defined? @members
-      raise Error, '@client is nil.' if @client.nil?
 
+      check_client
       @members = @client.calendar_members id
     end
 
@@ -74,8 +72,8 @@ module TimeTree
     # @since 0.0.1
     def labels
       return @labels if defined? @labels
-      raise Error, '@client is nil.' if @client.nil?
 
+      check_client
       @labels = @client.calendar_labels id
     end
   end
