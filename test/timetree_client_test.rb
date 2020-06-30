@@ -427,4 +427,24 @@ class TimeTreeClientTest < TimeTreeBaseTest
     ratelimit_info = "ratelimit:#{@client.ratelimit_remaining}/#{@client.ratelimit_limit}, reset_at:#{@client.ratelimit_reset_at.strftime('%m/%d %R')}"
     assert_equal "\#<#{@client.class}:#{@client.object_id} #{ratelimit_info}>", @client.inspect
   end
+
+  # negative cases for TimeTree::BaseModel.to_model
+
+  def test_to_model_then_fail_because_type_is_nil
+    data = { id: 'hoge', attributes: {} }
+    e = assert_raises StandardError do
+      TimeTree::BaseModel.to_model data
+    end
+    assert_equal TimeTree::Error, e.class
+    assert_equal 'type is required.', e.message
+  end
+
+  def test_to_model_then_fail_because_type_is_unknown
+    data = { id: 'hoge', type: 'unknown', attributes: {} }
+    e = assert_raises StandardError do
+      TimeTree::BaseModel.to_model data
+    end
+    assert_equal TimeTree::Error, e.class
+    assert_equal "type 'unknown' is unknown.", e.message
+  end
 end

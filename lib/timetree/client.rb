@@ -40,6 +40,7 @@ module TimeTree
     # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [TimeTree::Calendar]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar(cal_id, include_relationships: nil)
@@ -73,6 +74,7 @@ module TimeTree
     #
     # @param cal_id [String] calendar's id.
     # @return [Array<TimeTree::Label>]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_labels(cal_id)
@@ -88,6 +90,7 @@ module TimeTree
     #
     # @param cal_id [String] calendar's id.
     # @return [Array<TimeTree::User>]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def calendar_members(cal_id)
@@ -106,6 +109,8 @@ module TimeTree
     # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
+    # @raise [TimeTree::Error] if the event_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(cal_id, event_id, include_relationships: nil)
@@ -129,6 +134,7 @@ module TimeTree
     # @param include_relationships [Array<symbol>]
     # includes association's object in the response.
     # @return [Array<TimeTree::Event>]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(cal_id, days: 7, timezone: 'UTC', include_relationships: nil)
@@ -152,6 +158,7 @@ module TimeTree
     # @param cal_id [String] calendar's id.
     # @param params [Hash] TimeTree request body format.
     # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_event(cal_id, params)
@@ -172,6 +179,8 @@ module TimeTree
     # @param params [Hash]
     # event's information specified in TimeTree request body format.
     # @return [TimeTree::Event]
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
+    # @raise [TimeTree::Error] if the event_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update_event(cal_id, event_id, params)
@@ -191,6 +200,8 @@ module TimeTree
     # @param cal_id [String] calendar's id.
     # @param event_id [String] event's id.
     # @return [true] if the operation succeeded.
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
+    # @raise [TimeTree::Error] if the event_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete_event(cal_id, event_id)
@@ -210,7 +221,9 @@ module TimeTree
     # @param params [Hash]
     # comment's information specified in TimeTree request body format.
     # @return [TimeTree::Activity]
-    # @raise [TimeTree::ApiError] if the nhttp response status is not success.
+    # @raise [TimeTree::Error] if the cal_id arg is empty.
+    # @raise [TimeTree::Error] if the event_id arg is empty.
+    # @raise [TimeTree::ApiError] if the http response status is not success.
     # @since 0.0.1
     def create_activity(cal_id, event_id, params)
       check_calendar_id cal_id

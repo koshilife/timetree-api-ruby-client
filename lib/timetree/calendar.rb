@@ -25,7 +25,7 @@ module TimeTree
     # @param event_id [String]
     # event's id.
     # @return [TimeTree::Event]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client, @id or the event_id arg is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def event(event_id)
@@ -41,7 +41,7 @@ module TimeTree
     # @param timezone [String]
     # Timezone.
     # @return [Array<TimeTree::Event>]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def upcoming_events(days: 7, timezone: 'UTC')
@@ -53,7 +53,7 @@ module TimeTree
     # Get a calendar's member information.
     #
     # @return [Array<TimeTree::User>]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def members
@@ -67,7 +67,7 @@ module TimeTree
     # Get a calendar's label information used in event.
     #
     # @return [Array<TimeTree::Label>]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def labels
