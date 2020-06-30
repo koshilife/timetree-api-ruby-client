@@ -49,7 +49,7 @@ module TimeTree
     # Creates an event to the associated calendar.
     #
     # @return [TimeTree::Event]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client or @calendar_id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create
@@ -61,8 +61,7 @@ module TimeTree
     # Updates the event.
     #
     # @return [TimeTree::Event]
-    # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::Error] if the id property is not set.
+    # @raise [TimeTree::Error] if @client, @calendar_id or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def update
@@ -74,8 +73,7 @@ module TimeTree
     # Deletes the event.
     #
     # @return [true] if the operation succeeded.
-    # @raise [TimeTree::Error] if @client is not set.
-    # @raise [TimeTree::Error] if the id property is not set.
+    # @raise [TimeTree::Error] if @client, @calendar_id or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def delete
@@ -87,15 +85,13 @@ module TimeTree
     # Creates comment to the event.
     #
     # @return [TimeTree::Activity]
-    # @raise [TimeTree::Error] if @client is not set.
+    # @raise [TimeTree::Error] if @client, @calendar_id or @id is empty.
     # @raise [TimeTree::ApiError] if the http response status will not success.
     # @since 0.0.1
     def create_comment(message)
       check_client
       params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
       activity = to_model params
-      return if activity.nil?
-
       activity.create
     end
 
