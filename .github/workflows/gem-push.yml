@@ -21,6 +21,8 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
           bundle exec rake test
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
 
       - name: Publish to RubyGems
         run: |
