@@ -33,9 +33,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'zeitwerk', '~> 2.3.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'codecov', '~> 0.1.17'
   spec.add_development_dependency 'minitest', '~> 5.14.0'
   spec.add_development_dependency 'minitest-reporters', '~> 1.4.2'
   spec.add_development_dependency 'rake', '~> 12.0'
-  spec.add_development_dependency 'webmock', '~> 3.7.6'
   spec.add_development_dependency 'simplecov', '~> 0.18.5'
+  spec.add_development_dependency 'webmock', '~> 3.7.6'
 end

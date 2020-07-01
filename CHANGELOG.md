@@ -1,3 +1,8 @@
+# 0.1.6
+
+- refs #16 add code coverage to readme.
+- refs #17 update deprecated `version` for `ruby-version` on gem-push.yml.
+
 # 0.1.5
 
 - refs #6 setup GitHub Actions.
