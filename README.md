@@ -1,5 +1,6 @@
 # Simple TimeTree APIs client
 
+[![Test](https://github.com/koshilife/timetree-api-ruby-client/workflows/Test/badge.svg)](https://github.com/koshilife/timetree-api-ruby-client/actions?query=workflow%3ATest)
 [![Gem Version](https://badge.fury.io/rb/timetree.svg)](http://badge.fury.io/rb/timetree)
 
 ## About
