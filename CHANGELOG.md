@@ -1,3 +1,7 @@
+# 0.1.7
+
+- refs #16 correct a mistake codecov badge url on README
+
 # 0.1.6
 
 - refs #16 add code coverage to readme.
