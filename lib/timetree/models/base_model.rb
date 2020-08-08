@@ -78,10 +78,8 @@ module TimeTree
       return unless attributes.is_a? Hash
       return if attributes.empty?
 
-      setter_methods = self.class.instance_methods.select { |method| method.to_s.end_with? '=' }
       attributes.each do |key, value|
-        setter = "#{key.to_sym}=".to_sym
-        next unless setter_methods.include? setter
+        next unless respond_to?("#{key}=".to_sym)
 
         if defined?(self.class::TIME_FIELDS) && self.class::TIME_FIELDS.include?(key)
           value = Time.parse value
