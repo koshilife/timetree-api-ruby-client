@@ -1,3 +1,7 @@
+# 0.2.0
+
+- organize model classes.
+
 # 0.1.7
 
 - refs #16 correct a mistake codecov badge url on README
