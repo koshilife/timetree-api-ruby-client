@@ -23,7 +23,7 @@ module TimeTree
     end
 
     def inspect
-      "\#<#{self.class}:#{object_id} title:#{@title}, status:#{@status}>"
+      "\#<#{self.class}:#{object_id} title:#{title}, status:#{status}>"
     end
   end
 end
