@@ -5,6 +5,7 @@ loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect(
   'timetree' => 'TimeTree'
 )
+loader.collapse('**/models')
 loader.setup
 
 # module for TimeTree apis client
