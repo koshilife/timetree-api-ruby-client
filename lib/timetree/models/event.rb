@@ -123,8 +123,8 @@ module TimeTree
     private
 
     def relationships_params
-      current_label = label ? { type: 'label', id: label.id } : @relationships[:label]
-      current_attendees = attendees ? attendees.map { |u| { type: 'user', id: u.id } } : @relationships[:attendees]
+      current_label = label ? { type: 'label', id: label.id } : relationships[:label]
+      current_attendees = attendees ? attendees.map { |u| { type: 'user', id: u.id } } : relationships[:attendees]
       {
         label: { data: current_label },
         attendees: { data: current_attendees }

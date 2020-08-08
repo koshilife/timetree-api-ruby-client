@@ -124,7 +124,7 @@ module TimeTree
 
         @_relation_data_dic[type][id]
       }
-      @relationships.each do |key, id_data|
+      relationships.each do |key, id_data|
         relation_data = nil
         if id_data.is_a? Array
           relation_data = []

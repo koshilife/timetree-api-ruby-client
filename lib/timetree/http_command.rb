@@ -15,10 +15,10 @@ module TimeTree
     # @param path [String] String or URI to access.
     # @param params [Hash] Hash of URI query unencoded key/value pairs.
     def get(path, params = {})
-      logger.info "GET #{connection.build_url("#{@host}#{path}", params)}"
+      @logger.info "GET #{connection.build_url("#{@host}#{path}", params)}"
       res = connection.get path, params
       @client.update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
+      @logger.debug "Response status:#{res.status}, body:#{res.body}"
       res
     end
 
@@ -30,7 +30,7 @@ module TimeTree
       headers = { 'Content-Type' => 'application/json' }
       res = connection.run_request :post, path, body_params.to_json, headers
       @client.update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
+      @logger.debug "Response status:#{res.status}, body:#{res.body}"
       res
     end
 
@@ -38,11 +38,11 @@ module TimeTree
     # @param body_params [Hash]
     # The request bodythat will eventually be converted to JSON.
     def put(path, body_params = {})
-      logger.debug "PUT #{@host}#{path} body:#{body_params}"
+      @logger.debug "PUT #{@host}#{path} body:#{body_params}"
       headers = { 'Content-Type' => 'application/json' }
       res = connection.run_request :put, path, body_params.to_json, headers
       @client.update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
+      @logger.debug "Response status:#{res.status}, body:#{res.body}"
       res
     end
 
@@ -52,13 +52,11 @@ module TimeTree
       @logger.debug "DELETE #{@host}#{path} params:#{params}"
       res = connection.delete path, params
       @client.update_ratelimit(res)
-      logger.debug "Response status:#{res.status}, body:#{res.body}"
+      @logger.debug "Response status:#{res.status}, body:#{res.body}"
       res
     end
 
     private
-
-    attr_reader :logger
 
     def connection
       Faraday.new(

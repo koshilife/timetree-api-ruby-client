@@ -11,9 +11,8 @@ module TimeTree
     attr_accessor :logger
 
     def initialize
-      logger = Logger.new(STDOUT)
-      logger.level = :warn
-      @logger = logger
+      @logger = Logger.new(STDOUT)
+      @logger.level = :warn
     end
   end
 end

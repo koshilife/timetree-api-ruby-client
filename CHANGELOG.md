@@ -1,3 +1,9 @@
+# 0.2.1
+
+- do refactor
+  - use `respond_to?(setter)` instead of `instance_methods.include?(setter)`.
+  - use getter method instead of instant variables if defined it.
+
 # 0.2.0
 
 - organize model classes.
