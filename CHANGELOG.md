@@ -1,3 +1,8 @@
+# 0.3.0
+
+- refs #25 fix dependencies.
+- remove minitest-reporter.
+
 # 0.2.1
 
 - do refactor
