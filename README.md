@@ -1,4 +1,4 @@
-# Simple TimeTree APIs client
+# TimeTree APIs client
 
 [![Test](https://github.com/koshilife/timetree-api-ruby-client/workflows/Test/badge.svg)](https://github.com/koshilife/timetree-api-ruby-client/actions?query=workflow%3ATest)
 [![codecov](https://codecov.io/gh/koshilife/timetree-api-ruby-client/branch/master/graph/badge.svg)](https://codecov.io/gh/koshilife/timetree-api-ruby-client)
