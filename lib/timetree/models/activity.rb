@@ -39,7 +39,7 @@ module TimeTree
     # @since 0.0.1
     def data_params
       {
-        data: { attributes: { content: content } }
+        data: {attributes: {content: content}}
       }
     end
   end

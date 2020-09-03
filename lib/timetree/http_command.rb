@@ -27,7 +27,7 @@ module TimeTree
     # The request bodythat will eventually be converted to JSON.
     def post(path, body_params = {})
       @logger.debug "POST #{@host}#{path} body:#{body_params}"
-      headers = { 'Content-Type' => 'application/json' }
+      headers = {'Content-Type' => 'application/json'}
       res = connection.run_request :post, path, body_params.to_json, headers
       @client.update_ratelimit(res)
       @logger.debug "Response status:#{res.status}, body:#{res.body}"
@@ -39,7 +39,7 @@ module TimeTree
     # The request bodythat will eventually be converted to JSON.
     def put(path, body_params = {})
       @logger.debug "PUT #{@host}#{path} body:#{body_params}"
-      headers = { 'Content-Type' => 'application/json' }
+      headers = {'Content-Type' => 'application/json'}
       res = connection.run_request :put, path, body_params.to_json, headers
       @client.update_ratelimit(res)
       @logger.debug "Response status:#{res.status}, body:#{res.body}"
@@ -56,14 +56,14 @@ module TimeTree
       res
     end
 
-    private
+  private
 
     def connection
       Faraday.new(
         url: @host,
         headers: base_request_headers
       ) do |builder|
-        builder.response :json, parser_options: { symbolize_names: true }, content_type: /\bjson$/
+        builder.response :json, parser_options: {symbolize_names: true}, content_type: /\bjson$/
       end
     end
 
