@@ -90,7 +90,7 @@ module TimeTree
     # @since 0.0.1
     def create_comment(message)
       check_client
-      params = { type: 'activity', attributes: { calendar_id: calendar_id, event_id: id, content: message } }
+      params = {type: 'activity', attributes: {calendar_id: calendar_id, event_id: id, content: message}}
       activity = to_model params
       activity.create
     end
@@ -120,14 +120,14 @@ module TimeTree
       }
     end
 
-    private
+  private
 
     def relationships_params
-      current_label = label ? { type: 'label', id: label.id } : relationships[:label]
-      current_attendees = attendees ? attendees.map { |u| { type: 'user', id: u.id } } : relationships[:attendees]
+      current_label = label ? {type: 'label', id: label.id} : relationships[:label]
+      current_attendees = attendees ? attendees.map { |u| {type: 'user', id: u.id} } : relationships[:attendees]
       {
-        label: { data: current_label },
-        attendees: { data: current_attendees }
+        label: {data: current_label},
+        attendees: {data: current_attendees}
       }
     end
   end

@@ -28,7 +28,7 @@ module TimeTree
     # @since 0.0.1
     def current_user
       res = @http_cmd.get '/user'
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       to_model res.body[:data]
     end
@@ -47,7 +47,7 @@ module TimeTree
       check_calendar_id cal_id
       params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
       res = @http_cmd.get "/calendars/#{cal_id}", params
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       to_model(res.body[:data], included: res.body[:included])
     end
@@ -63,7 +63,7 @@ module TimeTree
     def calendars(include_relationships: nil)
       params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
       res = @http_cmd.get '/calendars', params
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       included = res.body[:included]
       res.body[:data].map { |item| to_model(item, included: included) }
@@ -80,7 +80,7 @@ module TimeTree
     def calendar_labels(cal_id)
       check_calendar_id cal_id
       res = @http_cmd.get "/calendars/#{cal_id}/labels"
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       res.body[:data].map { |item| to_model(item) }
     end
@@ -96,7 +96,7 @@ module TimeTree
     def calendar_members(cal_id)
       check_calendar_id cal_id
       res = @http_cmd.get "/calendars/#{cal_id}/members"
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       res.body[:data].map { |item| to_model item }
     end
@@ -118,7 +118,7 @@ module TimeTree
       check_event_id event_id
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
       res = @http_cmd.get "/calendars/#{cal_id}/events/#{event_id}", params
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       ev = to_model(res.body[:data], included: res.body[:included])
       ev.calendar_id = cal_id
@@ -142,7 +142,7 @@ module TimeTree
       params = relationships_params(include_relationships, Event::RELATIONSHIPS)
       params.merge!(days: days, timezone: timezone)
       res = @http_cmd.get "/calendars/#{cal_id}/upcoming_events", params
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       included = res.body[:included]
       res.body[:data].map do |item|
@@ -164,7 +164,7 @@ module TimeTree
     def create_event(cal_id, params)
       check_calendar_id cal_id
       res = @http_cmd.post "/calendars/#{cal_id}/events", params
-      raise ApiError, res if res.status != 201
+      raise ApiError.new(res) if res.status != 201
 
       ev = to_model res.body[:data]
       ev.calendar_id = cal_id
@@ -187,7 +187,7 @@ module TimeTree
       check_calendar_id cal_id
       check_event_id event_id
       res = @http_cmd.put "/calendars/#{cal_id}/events/#{event_id}", params
-      raise ApiError, res if res.status != 200
+      raise ApiError.new(res) if res.status != 200
 
       ev = to_model res.body[:data]
       ev.calendar_id = cal_id
@@ -208,7 +208,7 @@ module TimeTree
       check_calendar_id cal_id
       check_event_id event_id
       res = @http_cmd.delete "/calendars/#{cal_id}/events/#{event_id}"
-      raise ApiError, res if res.status != 204
+      raise ApiError.new(res) if res.status != 204
 
       true
     end
@@ -229,7 +229,7 @@ module TimeTree
       check_calendar_id cal_id
       check_event_id event_id
       res = @http_cmd.post "/calendars/#{cal_id}/events/#{event_id}/activities", params
-      raise ApiError, res if res.status != 201
+      raise ApiError.new(res) if res.status != 201
 
       activity = to_model res.body[:data]
       activity.calendar_id = cal_id
@@ -262,7 +262,7 @@ module TimeTree
       @ratelimit_reset_at = Time.at reset.to_i if reset
     end
 
-    private
+  private
 
     def check_token
       check_required_property(@token, 'token')

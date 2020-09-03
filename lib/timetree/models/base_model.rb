@@ -4,7 +4,7 @@ require 'time'
 
 module TimeTree
   # TimeTree base model object.
-  class BaseModel
+  class BaseModel # rubocop:disable Metrics/ClassLength
     # @return [Array<Hash<String,String>>]
     attr_accessor :relationships
     # @return [String]
@@ -20,10 +20,10 @@ module TimeTree
     # A TimeTree model object that be based on the type.
     # @raise [TimeTree::Error] if the type property is not set or unknown.
     # @since 0.0.1
-    def self.to_model(data, included: nil, client: nil)
+    def self.to_model(data, included: nil, client: nil) # rubocop:disable all
       id = data[:id]
       type = data[:type]
-      raise Error, 'type is required.' if type.nil?
+      raise Error.new('type is required.') if type.nil?
 
       attributes = data[:attributes] || {}
       relationships = data[:relationships] || {}
@@ -48,11 +48,11 @@ module TimeTree
       when 'activity'
         Activity.new(**params)
       else
-        raise Error, "type '#{type}' is unknown."
+        raise Error.new("type '#{type}' is unknown.")
       end
     end
 
-    def initialize(type:, id: nil, client: nil, attributes: nil, relationships: nil, included: nil)
+    def initialize(type:, id: nil, client: nil, attributes: nil, relationships: nil, included: nil) # rubocop:disable Metrics/ParameterLists
       @type = type
       @id = id
       @client = client
@@ -64,31 +64,29 @@ module TimeTree
       "\#<#{self.class}:#{object_id} id:#{id}>"
     end
 
-    private
+  private
 
     def check_client
-      raise Error, '@client is nil.' if @client.nil?
+      raise Error.new('@client is nil.') if @client.nil?
     end
 
     def to_model(data)
       self.class.to_model data, client: @client
     end
 
-    def set_attributes(attributes)
+    def set_attributes(attributes) # rubocop:disable Naming/AccessorMethodName
       return unless attributes.is_a? Hash
       return if attributes.empty?
 
       attributes.each do |key, value|
         next unless respond_to?("#{key}=".to_sym)
 
-        if defined?(self.class::TIME_FIELDS) && self.class::TIME_FIELDS.include?(key)
-          value = Time.parse value
-        end
+        value = Time.parse value if defined?(self.class::TIME_FIELDS) && self.class::TIME_FIELDS.include?(key)
         instance_variable_set "@#{key}", value
       end
     end
 
-    def set_relationships(relationships, included)
+    def set_relationships(relationships, included) # rubocop:disable all
       return unless relationships.is_a? Hash
       return if relationships.empty?
       return unless defined? self.class::RELATIONSHIPS
@@ -110,7 +108,7 @@ module TimeTree
       set_relationship_data_if_included(included)
     end
 
-    def set_relationship_data_if_included(included)
+    def set_relationship_data_if_included(included) # rubocop:disable all
       @_relation_data_dic = {}
       included.each do |data|
         item = to_model(data)
