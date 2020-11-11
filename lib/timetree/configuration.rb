@@ -7,6 +7,10 @@ module TimeTree
   class Configuration
     # @return [String]
     attr_accessor :token
+    # @return [String]
+    attr_accessor :application_id
+    # @return [String]
+    attr_accessor :private_key
     # @return [Logger]
     attr_accessor :logger
 
