@@ -25,10 +25,10 @@ module TimeTree
     # @param path [String] String or URI to access.
     # @param body_params [Hash]
     # The request bodythat will eventually be converted to JSON.
-    def post(path, body_params = {})
+    def post(path, body_params = {}, &block)
       @logger.debug "POST #{@host}#{path} body:#{body_params}"
       headers = {'Content-Type' => 'application/json'}
-      res = connection.run_request :post, path, body_params.to_json, headers
+      res = connection.run_request :post, path, body_params.to_json, headers, &block
       @client.update_ratelimit(res)
       @logger.debug "Response status:#{res.status}, body:#{res.body}"
       res
