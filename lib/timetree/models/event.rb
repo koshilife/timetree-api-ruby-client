@@ -56,7 +56,7 @@ module TimeTree
     # @since 0.0.1
     def create
       check_client
-      @client.create_event calendar_id, data_params
+      _create_event
     end
 
     #
@@ -68,7 +68,7 @@ module TimeTree
     # @since 0.0.1
     def update
       check_client
-      @client.update_event calendar_id, id, data_params
+      _update_event
     end
 
     #
@@ -80,7 +80,7 @@ module TimeTree
     # @since 0.0.1
     def delete
       check_client
-      @client.delete_event calendar_id, id
+      _delete_event
     end
 
     #
@@ -131,6 +131,30 @@ module TimeTree
         label: {data: current_label},
         attendees: {data: current_attendees}
       }
+    end
+
+    def _create_event
+      if @client.is_a?(CalendarApp::Client)
+        @client.create_event(data_params)
+      else
+        @client.create_event(calendar_id, data_params)
+      end
+    end
+
+    def _update_event
+      if @client.is_a?(CalendarApp::Client)
+        @client.update_event(id, data_params)
+      else
+        @client.update_event(calendar_id, id, data_params)
+      end
+    end
+
+    def _delete_event
+      if @client.is_a?(CalendarApp::Client)
+        @client.delete_event(id)
+      else
+        @cilent.delete_event(calendar_id, id)
+      end
     end
   end
 end
