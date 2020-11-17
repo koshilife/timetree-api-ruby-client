@@ -153,7 +153,7 @@ module TimeTree
       if @client.is_a?(CalendarApp::Client)
         @client.delete_event(id)
       else
-        @cilent.delete_event(calendar_id, id)
+        @client.delete_event(calendar_id, id)
       end
     end
   end

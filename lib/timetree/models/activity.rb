@@ -48,7 +48,7 @@ module TimeTree
   private
 
     def _create
-      if @cilent.is_a?(CalendarApp::Client)
+      if @client.is_a?(CalendarApp::Client)
         @client.create_activity(event_id, data_params)
       else
         @client.create_activity(calendar_id, event_id, data_params)

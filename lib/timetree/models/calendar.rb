@@ -91,7 +91,7 @@ module TimeTree
 
     def get_upcoming_event(days, timezone)
       if @client.is_a?(CalendarApp::Client)
-        @client.upcoming_events(days: days, timzeone: timezone)
+        @client.upcoming_events(days: days, timezone: timezone)
       else
         @client.upcoming_events(id, days: days, timezone: timezone)
       end
