@@ -95,7 +95,7 @@ module TimeTree
       def delete_event(event_id)
         check_access_token
         res = http_cmd.delete("/calendar/events/#{event_id}")
-        raise ApiError.new(res) if res.status != 200
+        raise ApiError.new(res) if res.status != 204
 
         true
       end
