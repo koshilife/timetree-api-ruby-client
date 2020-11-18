@@ -99,6 +99,8 @@ I, [2020-06-24T10:05:07.294807]  INFO -- : GET https://timetreeapis.com/calendar
 D, [2020-06-24T10:05:07.562038] DEBUG -- : Response status:404, body:{:type=>"https://developers.timetreeapp.com/en/docs/api#client-failure", :title=>"Not Found", :status=>404, :errors=>"Event not found"}
 ```
 
+More in-depth method documentation can be found at [RubyDoc.info](https://www.rubydoc.info/gems/timetree/).
+
 ## Contributing
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/koshilife/timetree-api-ruby-client). This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
