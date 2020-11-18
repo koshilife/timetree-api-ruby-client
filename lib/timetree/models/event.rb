@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timetree/models/base_model'
+
 module TimeTree
   # Model for TimeTree event or keep.
   class Event < BaseModel
