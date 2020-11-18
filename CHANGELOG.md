@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.2
+
+- remove zeitwerk dependency. (refs #29)
+
 ## 0.3.1
 
 - fix rubocop warnings.
