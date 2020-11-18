@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
-require 'zeitwerk'
-loader = Zeitwerk::Loader.for_gem
-loader.inflector.inflect(
-  'timetree' => 'TimeTree'
-)
-loader.collapse('**/models')
-loader.setup
+Dir[
+  File.join(
+    File.dirname(__FILE__),
+    'timetree',
+    '**',
+    '*'
+  )
+].sort.each do |f|
+  next if File.directory? f
+
+  require f
+end
 
 # module for TimeTree apis client
 module TimeTree
