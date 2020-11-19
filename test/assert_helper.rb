@@ -89,7 +89,7 @@ module AssertHelper
     assert_equal 'https://attachments.timetreeapp.com/USER001.png', f_mem.image_url
   end
 
-  def assert_ev001(ev, include_option: false, skip_assert_id: false, skip_assert_title: false)
+  def assert_ev001(ev, include_option: false, skip_assert_id: false, skip_assert_title: false, skip_assert_calendar_id: false)
     assert_equal 'EV001', ev.id unless skip_assert_id
     assert_equal 'event', ev.type
     assert_equal 'EV001 Title', ev.title unless skip_assert_title
@@ -106,7 +106,7 @@ module AssertHelper
     assert_equal 'https://github.com', ev.url
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.created_at.to_i
-    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,7', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
@@ -140,7 +140,7 @@ module AssertHelper
     end
   end
 
-  def assert_ev002(ev, include_option: false, skip_assert_id: false)
+  def assert_ev002(ev, include_option: false, skip_assert_id: false, skip_assert_calendar_id: false)
     assert_equal 'EV002', ev.id unless skip_assert_id
     assert_equal 'event', ev.type
     assert_equal 'EV002 Title', ev.title
@@ -157,7 +157,7 @@ module AssertHelper
     assert_nil ev.url
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.created_at.to_i
-    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,7', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
@@ -191,7 +191,7 @@ module AssertHelper
     end
   end
 
-  def assert_ev003(ev, include_option: false, skip_assert_id: false)
+  def assert_ev003(ev, include_option: false, skip_assert_id: false, skip_assert_calendar_id: false)
     assert_equal 'EV003', ev.id unless skip_assert_id
     assert_equal 'event', ev.type
     assert_equal 'EV003 Title', ev.title
@@ -208,7 +208,7 @@ module AssertHelper
     assert_equal 'https://github.com/', ev.url
     assert_equal Time.parse('2020-06-21T00:07:23.059Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-21T00:07:22.852Z').to_i, ev.created_at.to_i
-    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,2', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
@@ -242,7 +242,7 @@ module AssertHelper
     end
   end
 
-  def assert_ev004_child(ev)
+  def assert_ev004_child(ev, skip_assert_calendar_id: false)
     assert_equal 'EV004_CHILD', ev.id
     assert_equal 'event', ev.type
     assert_equal 'EV004_CHILD Title Recurrence', ev.title
@@ -259,7 +259,7 @@ module AssertHelper
     assert_nil ev.url
     assert_equal Time.parse('2020-06-24T01:33:16.564Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-24T01:33:16.555Z').to_i, ev.created_at.to_i
-    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,2', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
@@ -269,7 +269,7 @@ module AssertHelper
     assert_nil ev.attendees
   end
 
-  def assert_ev004_parent(ev)
+  def assert_ev004_parent(ev, skip_assert_calendar_id: false)
     assert_equal 'EV004_PARENT', ev.id
     assert_equal 'event', ev.type
     assert_equal 'EV004_PARENT Title Recurrence', ev.title
@@ -286,7 +286,7 @@ module AssertHelper
     assert_nil ev.url
     assert_equal Time.parse('2020-06-24T01:33:16.507Z').to_i, ev.updated_at.to_i
     assert_equal Time.parse('2020-06-16T00:13:00.860Z').to_i, ev.created_at.to_i
-    assert_equal 'CAL001', ev.calendar_id
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,2', ev.relationships[:label][:id]
     assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
@@ -296,13 +296,13 @@ module AssertHelper
     assert_nil ev.attendees
   end
 
-  def assert_activity001(act)
+  def assert_activity001(act, skip_assert_calendar_id: false)
     assert_equal 'ACT001', act.id
     assert_equal 'activity', act.type
     assert_equal 'ACT001 Content', act.content
     assert_equal Time.parse('2020-06-20T11:08:56.510Z').to_i, act.created_at.to_i
     assert_equal Time.parse('2020-06-20T11:08:56.510Z').to_i, act.updated_at.to_i
-    assert_equal 'CAL001', act.calendar_id
+    assert_equal 'CAL001', act.calendar_id unless skip_assert_calendar_id
     assert_equal 'EV001', act.event_id
   end
 

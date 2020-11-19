@@ -29,14 +29,16 @@ module TimeTree
       def initialize(installation_id, application_id = nil , private_key = nil)
         @installation_id = installation_id
         @application_id = application_id || TimeTree.configuration.application_id
-        @private_key = OpenSSL::PKey::RSA.new(private_key || TimeTree.configuration.private_key)
+        @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.private_key).to_s)
+        check_client_requirement
         @http_cmd = HttpCommand.new(API_HOST, self)
+      rescue OpenSSL::PKey::RSAError
+        raise Error.new 'private_key must be RSA private key.'
       end
 
       def calendar(include_relationships: nil)
         check_access_token
-        rels = Array(include_relationships).map(&:to_sym)
-        params = {include: (rels & Calendar::RELATIONSHIPS).join(',')}
+        params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
         res = http_cmd.get('/calendar', params)
         raise ApiError.new(res) if res.status != 200
 
@@ -52,9 +54,9 @@ module TimeTree
       end
 
       def event(event_id, include_relationships: nil)
+        check_event_id event_id
         check_access_token
-        rels = Array(include_relationships).map(&:to_sym)
-        params = {include: (rels & Event::RELATIONSHIPS).join(',')}
+        params = relationships_params(include_relationships, Event::RELATIONSHIPS)
         res = http_cmd.get("/calendar/events/#{event_id}", params)
         raise ApiError.new(res) if res.status != 200
 
@@ -63,12 +65,8 @@ module TimeTree
 
       def upcoming_events(days: 7, timezone: 'UTC', include_relationships: nil)
         check_access_token
-        rels = Array(include_relationships).map(&:to_sym)
-        params = {
-          days: days,
-          timezone: timezone,
-          include: (rels & Event::RELATIONSHIPS).join(',')
-        }
+        params = relationships_params(include_relationships, Event::RELATIONSHIPS)
+        params.merge!(days: days, timezone: timezone)
         res = http_cmd.get('/calendar/upcoming_events', params)
         raise ApiError.new(res) if res.status != 200
 
@@ -85,6 +83,7 @@ module TimeTree
       end
 
       def update_event(event_id, params)
+        check_event_id event_id
         check_access_token
         res = http_cmd.put("/calendar/events/#{event_id}", params)
         raise ApiError.new(res) if res.status != 200
@@ -93,6 +92,7 @@ module TimeTree
       end
 
       def delete_event(event_id)
+        check_event_id event_id
         check_access_token
         res = http_cmd.delete("/calendar/events/#{event_id}")
         raise ApiError.new(res) if res.status != 204
@@ -101,11 +101,14 @@ module TimeTree
       end
 
       def create_activity(event_id, params)
+        check_event_id event_id
         check_access_token
         res = http_cmd.post("/calendar/events/#{event_id}/activities", params)
         raise ApiError.new(res) if res.status != 201
 
-        to_model(res.body[:data])
+        activity = to_model(res.body[:data])
+        activity.event_id = event_id
+        activity
       end
 
       def update_ratelimit(res)
@@ -121,8 +124,9 @@ module TimeTree
 
       attr_reader :http_cmd, :access_token
 
-      def to_model(data, included: nil)
-        TimeTree::BaseModel.to_model data, client: self, included: included
+      def check_client_requirement
+        check_required_property(installation_id, 'installation_id')
+        check_required_property(application_id, 'application_id')
       end
 
       def check_access_token
@@ -152,6 +156,29 @@ module TimeTree
           iss: application_id
         }
         JWT.encode(payload, private_key, 'RS256')
+      end
+
+      def check_event_id(value)
+        check_required_property(value, 'event_id')
+      end
+
+      def check_required_property(value, name)
+        err = Error.new "#{name} is required."
+        raise err if value.nil?
+        raise err if value.to_s.empty?
+
+        true
+      end
+
+      def to_model(data, included: nil)
+        TimeTree::BaseModel.to_model data, client: self, included: included
+      end
+
+      def relationships_params(relationships, default)
+        params = {}
+        relationships ||= default
+        params[:include] = relationships.join ',' if relationships.is_a? Array
+        params
       end
     end
   end
