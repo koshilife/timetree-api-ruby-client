@@ -18,7 +18,7 @@ module TimeTree
 
       # @param installation_id [Integer] CalendarApp's installation id
       # @param application_id [String] CalendarApp id
-
+      # @param private_key [String] RSA private key for CalendarApp
       def initialize(installation_id, application_id = nil , private_key = nil)
         @installation_id = installation_id
         @application_id = application_id || TimeTree.configuration.application_id
@@ -29,6 +29,13 @@ module TimeTree
         raise Error.new 'private_key must be RSA private key.'
       end
 
+      #
+      # Get a calendar information related to CalendarApp
+      #
+      # @param include_relationships [Array<symbol>]
+      # includes association's object in the response.
+      # @return [TimeTree::Calendar]
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def calendar(include_relationships: nil)
         check_access_token
         params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
@@ -38,6 +45,11 @@ module TimeTree
         to_model(res.body[:data], included: res.body[:included])
       end
 
+      #
+      # Get a calendar's member information.
+      #
+      # @return [Array<TimeTree::User>]
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def calendar_members
         check_access_token
         res = http_cmd.get('/calendar/members')
@@ -46,6 +58,15 @@ module TimeTree
         res.body[:data].map { |item| to_model(item) }
       end
 
+      #
+      # Get an event's information.
+      #
+      # @param event_id [String] event's id.
+      # @param include_relationships [Array<symbol>]
+      # includes association's object in the response.
+      # @return [TimeTree::Event]
+      # @raise [TimeTree::Error] if the event_id arg is empty.
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def event(event_id, include_relationships: nil)
         check_event_id event_id
         check_access_token
@@ -56,6 +77,15 @@ module TimeTree
         to_model(res.body[:data], included: res.body[:included])
       end
 
+      #
+      # Get events' information after a request date.
+      #
+      # @param days [Integer] The number of days to get.
+      # @param timezone [String] Timezone.
+      # @param include_relationships [Array<symbol>]
+      # includes association's object in the response.
+      # @return [Array<TimeTree::Event>]
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def upcoming_events(days: 7, timezone: 'UTC', include_relationships: nil)
         check_access_token
         params = relationships_params(include_relationships, Event::RELATIONSHIPS)
@@ -67,6 +97,13 @@ module TimeTree
         res.body[:data].map { |item| to_model(item, included: included) }
       end
 
+      #
+      # Creates an event.
+      #
+      # @param params [Hash] TimeTree request body format.
+      # @return [TimeTree::Event]
+      # @raise [TimeTree::Error] if the cal_id arg is empty.
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def create_event(params)
         check_access_token
         res = http_cmd.post('/calendar/events', params)
@@ -75,6 +112,15 @@ module TimeTree
         to_model(res.body[:data])
       end
 
+      #
+      # Updates an event.
+      #
+      # @param event_id [String] event's id.
+      # @param params [Hash]
+      # event's information specified in TimeTree request body format.
+      # @return [TimeTree::Event]
+      # @raise [TimeTree::Error] if the event_id arg is empty.
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def update_event(event_id, params)
         check_event_id event_id
         check_access_token
@@ -84,6 +130,13 @@ module TimeTree
         to_model(res.body[:data])
       end
 
+      #
+      # Deletes an event.
+      #
+      # @param event_id [String] event's id.
+      # @return [true] if the operation succeeded.
+      # @raise [TimeTree::Error] if the event_id arg is empty.
+      # @raise [TimeTree::ApiError] if the http response status will not success.
       def delete_event(event_id)
         check_event_id event_id
         check_access_token
@@ -93,6 +146,15 @@ module TimeTree
         true
       end
 
+      #
+      # Creates a comment.
+      #
+      # @param event_id [String] event's id.
+      # @param params [Hash]
+      # comment's information specified in TimeTree request body format.
+      # @return [TimeTree::Activity]
+      # @raise [TimeTree::Error] if the event_id arg is empty.
+      # @raise [TimeTree::ApiError] if the http response status is not success.
       def create_activity(event_id, params)
         check_event_id event_id
         check_access_token

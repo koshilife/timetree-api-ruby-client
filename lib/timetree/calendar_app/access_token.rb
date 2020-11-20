@@ -13,6 +13,10 @@ module TimeTree
         @expire_at = expire_at
       end
 
+      #
+      # Returns the access token is expired or not.
+      #
+      # @return [Boolean]
       def expired?
         Time.now.to_i > expire_at
       end
