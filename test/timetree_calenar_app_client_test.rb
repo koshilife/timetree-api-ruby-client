@@ -283,6 +283,20 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
     assert_blank_error e, 'event_id'
   end
 
+  #
+  # test for TimeTree::Client#inspect
+  #
+
+  def test_inspect
+    assert_equal "\#<#{@client.class}:#{@client.object_id}>", @client.inspect
+
+    add_stub_request(:get, "#{HOST}/calendar", res_body: load_test_data('calendar_001.json'))
+    @client.calendar include_relationships: {}
+
+    ratelimit_info = "ratelimit:#{@client.ratelimit_remaining}/#{@client.ratelimit_limit}, reset_at:#{@client.ratelimit_reset_at.strftime('%m/%d %R')}"
+    assert_equal "\#<#{@client.class}:#{@client.object_id} #{ratelimit_info}>", @client.inspect
+  end
+
   private
 
   def stub_token_request

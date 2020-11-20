@@ -166,6 +166,17 @@ module TimeTree
         activity
       end
 
+      def inspect
+        limit_info = nil
+        if defined?(@ratelimit_limit) && @ratelimit_limit
+          limit_info = " ratelimit:#{ratelimit_remaining}/#{ratelimit_limit}"
+        end
+        if defined?(@ratelimit_reset_at) && @ratelimit_reset_at
+          limit_info = "#{limit_info}, reset_at:#{ratelimit_reset_at.strftime('%m/%d %R')}"
+        end
+        "\#<#{self.class}:#{object_id}#{limit_info}>"
+      end
+
       private
 
       attr_reader :http_cmd, :access_token
