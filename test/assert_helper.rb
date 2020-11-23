@@ -159,16 +159,16 @@ module AssertHelper
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.created_at.to_i
     assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,7', ev.relationships[:label][:id]
-    assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
+    assert_equal 'CAL001,APP001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
     assert_equal %w[CAL001,USER001], attendee_ids
     if include_option
       creator = ev.creator
-      assert_equal 'CAL001,USER001', creator.id
-      assert_equal 'user', creator.type
-      assert_equal 'USER001 Name', creator.name
-      assert_equal 'USER001 Description', creator.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
+      assert_equal 'CAL001,APP001', creator.id
+      assert_equal 'application', creator.type
+      assert_equal 'APPLICATION001 Name', creator.name
+      assert_equal 'APPLICATION001 Description', creator.description
+      assert_equal 'https://attachments.timetreeapp.com/APP001.png', creator.image_url
 
       label = ev.label
       assert_equal 'CAL001,7', label.id

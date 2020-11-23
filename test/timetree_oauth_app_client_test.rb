@@ -3,7 +3,6 @@
 require 'test_helper'
 
 class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
-
   def test_initialize
     e =
       assert_raises StandardError do
@@ -440,12 +439,9 @@ class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
     assert_equal 'type is required.', e.message
   end
 
-  def test_to_model_then_fail_because_type_is_unknown
-    data = {id: 'hoge', type: 'unknown', attributes: {}}
-    e = assert_raises StandardError do
-      TimeTree::BaseModel.to_model data
-    end
-    assert_equal TimeTree::Error, e.class
-    assert_equal "type 'unknown' is unknown.", e.message
+  def test_to_model_then_return_hash_because_type_is_unknown
+    data = {id: 'hoge', type: 'unknown', attributes: {field1: 'a', field2: 'b'}}
+    actual = TimeTree::BaseModel.to_model data
+    assert_equal actual, data
   end
 end
