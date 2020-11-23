@@ -121,7 +121,6 @@ module TimeTree
         if item.is_a? Hash
           item_id = item[:id]
           item_type = item[:type]
-          puts "#{__method__} item_id:#{item_id}, item_type:#{item_type}"
         else
           item_id = item.id
           item_type = item.type
