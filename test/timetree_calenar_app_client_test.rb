@@ -56,7 +56,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#calendar
+  # test for TimeTree::CalendarApp::Client#calendar
   #
 
   def test_fetch_calendar
@@ -109,7 +109,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#calendar_members
+  # test for TimeTree::CalendarApp::Client#calendar_members
   #
 
   def test_fetch_calendar_members
@@ -129,7 +129,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#event
+  # test for TimeTree::CalendarApp::Client#event
   #
 
   def test_fetch_event
@@ -216,7 +216,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#upcoming_events
+  # test for TimeTree::CalendarApp::Client#upcoming_events
   #
 
   def test_fetch_upcoming_event
@@ -250,7 +250,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#create_event
+  # test for TimeTree::CalendarApp::Client#create_event
   #
 
   def test_create_event
@@ -273,7 +273,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#update_event
+  # test for TimeTree::CalendarApp::Client#update_event
   #
 
   def test_update_event
@@ -301,7 +301,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#delete_event
+  # test for TimeTree::CalendarApp::Client#delete_event
   #
 
   def test_delete_event
@@ -326,7 +326,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#create_activity
+  # test for TimeTree::CalendarApp::Client#create_activity
   #
 
   def test_create_activity
@@ -354,7 +354,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::OAuthApp::Client#inspect
+  # test for TimeTree::CalendarApp::Client#inspect
   #
 
   def test_inspect
