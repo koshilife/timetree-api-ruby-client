@@ -15,7 +15,7 @@ module TimeTree
     # @param data [Hash]
     # TimeTree apis's response data.
     # @param included [Hash]
-    # @param client [TimeTree::OAuthApp::Client]
+    # @param client [TimeTree::OAuthApp::Client, TimeTree::CalendarApp::Client]
     # @return [TimeTree::User, TimeTree::Label, TimeTree::Calendar, TimeTree::Event, TimeTree::Activity, Hash]
     # A TimeTree model object that be based on the type.
     # @raise [TimeTree::Error] if the type property is not set.
