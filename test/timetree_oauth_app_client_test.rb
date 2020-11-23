@@ -188,6 +188,13 @@ class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
     assert_ev001 ev
   end
 
+  def test_fetch_event_creator_model_type_is_unknown
+    res_body = load_test_data('event_099_unknown_type_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV099(\?.*)?}, res_body: res_body)
+    ev = @client.event 'CAL001', 'EV099'
+    assert_ev099 ev, include_option: true
+  end
+
   def test_fetch_event_with_include_options
     res_body = load_test_data('event_001_include.json')
     add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV001(\?.*)?}, res_body: res_body)

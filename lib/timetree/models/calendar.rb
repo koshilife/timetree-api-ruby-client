@@ -107,7 +107,7 @@ module TimeTree
 
     def get_labels
       if @client.is_a?(CalendarApp::Client)
-        nil # CalendarApp does not support label api
+        raise Error.new 'CalendarApp does not support label api'
       else
         @client.calendar_labels(id)
       end

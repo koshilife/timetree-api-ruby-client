@@ -77,6 +77,37 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
     assert_cal001_members cal.members
   end
 
+  def test_calendar_object_of_associated_methods
+    res_body = load_test_data('calendar_001.json')
+    add_stub_request(:get, "#{HOST}/calendar", res_body: res_body)
+    cal = @client.calendar include_relationships: {}
+
+    # Calendar#event
+    res_body = load_test_data('event_001_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendar/events/EV001(\?.*)?}, res_body: res_body)
+    ev = cal.event 'EV001'
+    assert_ev001 ev, include_option: true, skip_assert_calendar_id: true
+
+    # Calendar#upcoming_events
+    res_body = load_test_data('events_001_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendar/upcoming_events\?days=7(.*)?(timezone=UTC)(.*)?}, res_body: res_body)
+    evs = cal.upcoming_events
+    assert_equal 3, evs.length
+    assert_ev001 evs[0], include_option: true, skip_assert_calendar_id: true
+    assert_ev002 evs[1], include_option: true, skip_assert_calendar_id: true
+    assert_ev003 evs[2], include_option: true, skip_assert_calendar_id: true
+
+    # Calendar#members
+    res_body = load_test_data('calendar_members_001.json')
+    add_stub_request(:get, "#{HOST}/calendar/members", res_body: res_body)
+    mems = cal.members
+    assert_cal001_members mems
+
+    # Calendar#labels
+    e = assert_raises(TimeTree::Error) { cal.labels }
+    assert_equal 'CalendarApp does not support label api', e.message
+  end
+
   #
   # test for TimeTree::OAuthApp::Client#calendar_members
   #
@@ -143,6 +174,45 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
     e = assert_raises(StandardError) { @client.event nil }
 
     assert_blank_error e, 'event_id'
+  end
+
+  def test_event_object_of_associated_methods
+    res_body = load_test_data('event_001.json')
+    add_stub_request(:get, "#{HOST}/calendar/events/EV001", res_body: res_body)
+    ev = @client.event 'EV001', include_relationships: {}
+
+    # Event#create
+    ev2 = ev.dup
+    new_title = 'EV001 Title Updated'
+    ev2.title = new_title
+    res_body = load_test_data('event_001_create.json')
+    add_stub_request(:post, "#{HOST}/calendar/events", req_body: ev2.data_params, res_body: res_body, res_status: 201)
+    new_ev = ev2.create
+    assert_equal 'NEW_EV001', new_ev.id
+    assert_ev001 new_ev, skip_assert_id: true, skip_assert_title: true, skip_assert_calendar_id: true
+
+    # Event#update
+    ev3 = ev.dup
+    ev3.title = 'EV001 Title Updated'
+    res_body = load_test_data('event_001_update.json')
+    add_stub_request(:put, "#{HOST}/calendar/events/EV001", req_body: ev3.data_params, res_body: res_body)
+    updated_ev = ev3.update
+    assert_equal ev3.title, updated_ev.title
+    assert_ev001 updated_ev, skip_assert_title: true, skip_assert_calendar_id: true
+
+    # Event#create_comment
+    ev4 = ev.dup
+    message = 'comment1'
+    data_params = {data: {attributes: {content: message}}}
+    res_body = load_test_data('activity_001_create.json')
+    add_stub_request(:post, "#{HOST}/calendar/events/EV001/activities", req_body: data_params, res_body: res_body, res_status: 201)
+    activity = ev4.create_comment message
+    assert_activity001 activity, skip_assert_calendar_id: true
+
+    # Event#delete
+    add_stub_request(:delete, "#{HOST}/calendar/events/EV001", res_status: 204)
+    did_delete = ev.delete
+    assert did_delete
   end
 
   #
