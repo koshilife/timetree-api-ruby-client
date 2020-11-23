@@ -14,7 +14,7 @@ class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
 
     # set a token by configure
     TimeTree.configure do |config|
-      config.token = 'token_from_configure'
+      config.oauth_app_token = 'token_from_configure'
     end
     client = TimeTree::OAuthApp::Client.new
     assert_equal 'token_from_configure', client.token

@@ -28,12 +28,11 @@ Or install it yourself as:
 ## Usage
 
 The APIs client needs access token.
-Set a `token` variable to the value you got by above:
 
 ```ruby
 # set token by TimeTree.configure methods.
 TimeTree.configure do |config|
-  config.token = '<YOUR_ACCESS_TOKEN>'
+  config.oauth_app_token = '<YOUR_ACCESS_TOKEN>'
 end
 client = TimeTree::OAuthApp::Client.new
 

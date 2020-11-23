@@ -21,8 +21,8 @@ module TimeTree
       # @param private_key [String] RSA private key for CalendarApp
       def initialize(installation_id, application_id = nil, private_key = nil)
         @installation_id = installation_id
-        @application_id = application_id || TimeTree.configuration.application_id
-        @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.private_key).to_s)
+        @application_id = application_id || TimeTree.configuration.calendar_app_application_id
+        @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.calendar_app_private_key).to_s)
         check_client_requirement
         @http_cmd = HttpCommand.new(API_HOST, self)
       rescue OpenSSL::PKey::RSAError

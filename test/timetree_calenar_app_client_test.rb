@@ -13,8 +13,8 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   def test_initialize_with_configuration
     pkey = OpenSSL::PKey::RSA.generate(1024).export
     TimeTree.configure do |c|
-      c.application_id = 'app_id'
-      c.private_key = pkey
+      c.calendar_app_application_id = 'app_id'
+      c.calendar_app_private_key = pkey
     end
     client = TimeTree::CalendarApp::Client.new(1)
 
@@ -23,8 +23,8 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
 
     # reset configure
     TimeTree.configure do |c|
-      c.application_id = nil
-      c.private_key = nil
+      c.calendar_app_application_id = nil
+      c.calendar_app_private_key = nil
     end
   end
 

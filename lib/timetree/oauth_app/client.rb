@@ -9,7 +9,7 @@ module TimeTree
 
       # @param token [String] a TimeTree's access token.
       def initialize(token = nil)
-        @token = token || TimeTree.configuration.token
+        @token = token || TimeTree.configuration.oauth_app_token
         check_token
         @http_cmd = HttpCommand.new(API_HOST, self)
       end
