@@ -23,10 +23,10 @@ class TimeTreeBaseTest < Minitest::Test
     @client = TimeTree::Client.new('token')
   end
 
-  private
+private
 
   def default_request_headers(token = 'token')
-    { 'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => "Bearer #{token}" }
+    {'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => "Bearer #{token}"}
   end
 
   def default_response_headers

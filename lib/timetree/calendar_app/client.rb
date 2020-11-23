@@ -19,7 +19,7 @@ module TimeTree
       # @param installation_id [Integer] CalendarApp's installation id
       # @param application_id [String] CalendarApp id
       # @param private_key [String] RSA private key for CalendarApp
-      def initialize(installation_id, application_id = nil , private_key = nil)
+      def initialize(installation_id, application_id = nil, private_key = nil)
         @installation_id = installation_id
         @application_id = application_id || TimeTree.configuration.application_id
         @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.private_key).to_s)
@@ -177,7 +177,7 @@ module TimeTree
         "\#<#{self.class}:#{object_id}#{limit_info}>"
       end
 
-      private
+    private
 
       attr_reader :http_cmd, :access_token
 
@@ -188,6 +188,7 @@ module TimeTree
 
       def check_access_token
         return if access_token?
+
         get_access_token
       end
 

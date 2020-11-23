@@ -281,7 +281,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   #
 
   def test_create_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_create.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_status: 201, res_body: res_body)
     ev = @client.create_event 'CAL001', req_body
@@ -290,7 +290,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_create_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_body: res_body, res_status: 401)
     e =
@@ -313,7 +313,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   #
 
   def test_update_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_update.json')
     add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body)
     ev = @client.update_event 'CAL001', 'EV001', req_body
@@ -322,7 +322,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_update_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body, res_status: 401)
     e =
@@ -385,7 +385,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   #
 
   def test_create_activity
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('activity_001_create.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 201, res_body: res_body)
     act = @client.create_activity 'CAL001', 'EV001', req_body
@@ -393,7 +393,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_create_activity_then_fail
-    req_body = { data: { attributes: {} } }
+    req_body = {data: {attributes: {}}}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 401, res_body: res_body)
     e =
@@ -431,7 +431,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   # negative cases for TimeTree::BaseModel.to_model
 
   def test_to_model_then_fail_because_type_is_nil
-    data = { id: 'hoge', attributes: {} }
+    data = {id: 'hoge', attributes: {}}
     e = assert_raises StandardError do
       TimeTree::BaseModel.to_model data
     end
@@ -440,7 +440,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_to_model_then_fail_because_type_is_unknown
-    data = { id: 'hoge', type: 'unknown', attributes: {} }
+    data = {id: 'hoge', type: 'unknown', attributes: {}}
     e = assert_raises StandardError do
       TimeTree::BaseModel.to_model data
     end

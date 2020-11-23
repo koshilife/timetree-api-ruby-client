@@ -70,7 +70,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   def test_fetch_calendar_with_include_options
     res_body = load_test_data('calendar_001_include.json')
     add_stub_request(:get, "#{HOST}/calendar?include=labels,members", res_body: res_body)
-    cal = @client.calendar include_relationships: [:labels, :members]
+    cal = @client.calendar include_relationships: %i[labels members]
 
     assert_cal001 cal
     assert_cal001_labels cal.labels
@@ -112,12 +112,12 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   def test_fetch_event_with_include_options
     res_body = load_test_data('event_001_include.json')
     add_stub_request(:get, "#{HOST}/calendar/events/EV001?include=creator,label,attendees", res_body: res_body)
-    ev = @client.event 'EV001', include_relationships: [:creator, :label, :attendees]
+    ev = @client.event 'EV001', include_relationships: %i[creator label attendees]
 
     assert_ev001 ev, skip_assert_calendar_id: true, include_option: true
   end
 
-  def test_fetch_recurrence_event\
+  def test_fetch_recurrence_event
     res_body = load_test_data('event_004_recurrence_child.json')
     add_stub_request(:get, "#{HOST}/calendar/events/EV004_CHILD", res_body: res_body)
     ev = @client.event 'EV004_CHILD', include_relationships: {}
@@ -163,7 +163,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   def test_fetch_upcoming_event_with_include_options
     res_body = load_test_data('events_001_include.json')
     add_stub_request(:get, "#{HOST}/calendar/upcoming_events?days=3&timezone=Asia/Tokyo&include=creator,label,attendees", res_body: res_body)
-    evs = @client.upcoming_events days: 3, timezone: 'Asia/Tokyo', include_relationships: [:creator, :label, :attendees]
+    evs = @client.upcoming_events days: 3, timezone: 'Asia/Tokyo', include_relationships: %i[creator label attendees]
 
     assert_equal 3, evs.length
     assert_ev001 evs[0], include_option: true, skip_assert_calendar_id: true
@@ -184,7 +184,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   #
 
   def test_create_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_create.json')
     add_stub_request(:post, "#{HOST}/calendar/events", req_body: req_body, res_body: res_body, res_status: 201)
     ev = @client.create_event req_body
@@ -194,7 +194,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   def test_create_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendar/events", req_body: req_body, res_body: res_body, res_status: 401)
     e = assert_raises(StandardError) { @client.create_event req_body }
@@ -207,7 +207,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   #
 
   def test_update_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_update.json')
     add_stub_request(:put, "#{HOST}/calendar/events/EV001", req_body: req_body, res_body: res_body)
     ev = @client.update_event 'EV001', req_body
@@ -217,7 +217,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   def test_update_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:put, "#{HOST}/calendar/events/EV001", req_body: req_body, res_body: res_body, res_status: 401)
     e = assert_raises(StandardError) { @client.update_event 'EV001', req_body }
@@ -260,7 +260,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   #
 
   def test_create_activity
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('activity_001_create.json')
     add_stub_request(:post, "#{HOST}/calendar/events/EV001/activities", req_body: req_body, res_body: res_body, res_status: 201)
     act = @client.create_activity 'EV001', req_body
@@ -269,7 +269,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   def test_create_activity_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendar/events/EV001/activities", req_body: req_body, res_body: res_body, res_status: 401)
     e = assert_raises(StandardError) { @client.create_activity 'EV001', req_body }
@@ -297,12 +297,12 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
     assert_equal "\#<#{@client.class}:#{@client.object_id} #{ratelimit_info}>", @client.inspect
   end
 
-  private
+private
 
   def stub_token_request
-    res_body = { access_token: 'token', expire_at: Time.now.to_i + 600, token_type: 'Bearer' }.to_json
-    stub_request(:post, "#{HOST}/installations/#{@installation_id}/access_tokens")
-      .with(headers: { 'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => /^Bearer .+/ })
-      .to_return(status: 200, body: res_body, headers: default_response_headers)
+    res_body = {access_token: 'token', expire_at: Time.now.to_i + 600, token_type: 'Bearer'}.to_json
+    stub_request(:post, "#{HOST}/installations/#{@installation_id}/access_tokens").
+      with(headers: {'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => /^Bearer .+/}).
+      to_return(status: 200, body: res_body, headers: default_response_headers)
   end
 end
