@@ -1,0 +1,71 @@
+{
+  "data": {
+    "id": "EV099",
+    "type": "event",
+    "attributes": {
+      "title": "EV099 Title",
+      "all_day": false,
+      "start_at": "2020-06-20T10:00:00.000Z",
+      "start_timezone": "Asia/Tokyo",
+      "end_at": "2020-06-20T11:00:00.000Z",
+      "end_timezone": "Asia/Tokyo",
+      "location": "EV099 Location",
+      "url": "https://github.com",
+      "updated_at": "2020-06-18T09:00:00.000Z",
+      "created_at": "2020-06-18T09:00:00.000Z",
+      "category": "schedule",
+      "description": null,
+      "recurrence": null,
+      "recurring_uuid": null
+    },
+    "relationships": {
+      "label": {
+        "data": {
+          "id": "CAL001,7",
+          "type": "label"
+        }
+      },
+      "creator": {
+        "data": {
+          "id": "CAL001,UNKNOWN001",
+          "type": "unknown"
+        }
+      },
+      "attendees": {
+        "data": [
+          {
+            "id": "CAL001,USER001",
+            "type": "user"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "id": "CAL001,USER001",
+      "type": "user",
+      "attributes": {
+        "name": "USER001 Name",
+        "description": "USER001 Description",
+        "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    },
+    {
+      "id": "CAL001,7",
+      "type": "label",
+      "attributes": {
+        "name": "French rose",
+        "color": "#f35f8c"
+      }
+    },
+    {
+      "id": "CAL001,UNKNOWN001",
+      "type": "unknown",
+      "attributes": {
+        "field1": "UNKNOWN001 FIELD1",
+        "field2": "UNKNOWN001 FIELD2"
+      }
+    }
+  ]
+}

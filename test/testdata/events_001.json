@@ -70,8 +70,8 @@
         },
         "creator": {
           "data": {
-            "id": "CAL001,USER001",
-            "type": "user"
+            "id": "CAL001,APP001",
+            "type": "application"
           }
         },
         "attendees": {

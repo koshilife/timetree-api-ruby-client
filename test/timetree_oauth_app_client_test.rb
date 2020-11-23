@@ -2,25 +2,25 @@
 
 require 'test_helper'
 
-class TimeTreeClientTest < TimeTreeBaseTest
+class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
   def test_initialize
     e =
       assert_raises StandardError do
-        TimeTree::Client.new
+        TimeTree::OAuthApp::Client.new
       end
     assert_equal(TimeTree::Error, e.class)
     assert_equal('token is required.', e.message)
 
     # set a token by configure
     TimeTree.configure do |config|
-      config.token = 'token_from_configure'
+      config.oauth_app_token = 'token_from_configure'
     end
-    client = TimeTree::Client.new
+    client = TimeTree::OAuthApp::Client.new
     assert_equal 'token_from_configure', client.token
   end
 
   #
-  # test for TimeTree::Client#current_user
+  # test for TimeTree::OAuthApp::Client#current_user
   #
 
   def test_fetch_current_user
@@ -44,7 +44,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar
+  # test for TimeTree::OAuthApp::Client#calendar
   #
 
   def test_fetch_calendar
@@ -86,7 +86,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendars
+  # test for TimeTree::OAuthApp::Client#calendars
   #
 
   def test_fetch_calendars
@@ -122,7 +122,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar_members
+  # test for TimeTree::OAuthApp::Client#calendar_members
   #
 
   def test_fetch_calendar_members
@@ -151,7 +151,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar_labels
+  # test for TimeTree::OAuthApp::Client#calendar_labels
   #
 
   def test_fetch_calendar_labels
@@ -180,12 +180,19 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#event
+  # test for TimeTree::OAuthApp::Client#event
   #
 
   def test_fetch_event
     ev = fetch_ev001
     assert_ev001 ev
+  end
+
+  def test_fetch_event_creator_model_type_is_unknown
+    res_body = load_test_data('event_099_unknown_type_include.json')
+    add_stub_request(:get, %r{#{HOST}/calendars/CAL001/events/EV099(\?.*)?}, res_body: res_body)
+    ev = @client.event 'CAL001', 'EV099'
+    assert_ev099 ev, include_option: true
   end
 
   def test_fetch_event_with_include_options
@@ -232,7 +239,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#upcoming_events
+  # test for TimeTree::OAuthApp::Client#upcoming_events
   #
 
   def test_fetch_upcoming_event
@@ -277,11 +284,11 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_event
+  # test for TimeTree::OAuthApp::Client#create_event
   #
 
   def test_create_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_create.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_status: 201, res_body: res_body)
     ev = @client.create_event 'CAL001', req_body
@@ -290,7 +297,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_create_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events", req_body: req_body, res_body: res_body, res_status: 401)
     e =
@@ -309,11 +316,11 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#update_event
+  # test for TimeTree::OAuthApp::Client#update_event
   #
 
   def test_update_event
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('event_001_update.json')
     add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body)
     ev = @client.update_event 'CAL001', 'EV001', req_body
@@ -322,7 +329,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_update_event_then_fail
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('401.json')
     add_stub_request(:put, "#{HOST}/calendars/CAL001/events/EV001", req_body: req_body, res_body: res_body, res_status: 401)
     e =
@@ -347,7 +354,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#delete_event
+  # test for TimeTree::OAuthApp::Client#delete_event
   #
 
   def test_delete_event
@@ -381,11 +388,11 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_activity
+  # test for TimeTree::OAuthApp::Client#create_activity
   #
 
   def test_create_activity
-    req_body = { data: 'hoge' }
+    req_body = {data: 'hoge'}
     res_body = load_test_data('activity_001_create.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 201, res_body: res_body)
     act = @client.create_activity 'CAL001', 'EV001', req_body
@@ -393,7 +400,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   def test_create_activity_then_fail
-    req_body = { data: { attributes: {} } }
+    req_body = {data: {attributes: {}}}
     res_body = load_test_data('401.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: req_body, res_status: 401, res_body: res_body)
     e =
@@ -418,7 +425,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#inspect
+  # test for TimeTree::OAuthApp::Client#inspect
   #
 
   def test_inspect
@@ -431,7 +438,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   # negative cases for TimeTree::BaseModel.to_model
 
   def test_to_model_then_fail_because_type_is_nil
-    data = { id: 'hoge', attributes: {} }
+    data = {id: 'hoge', attributes: {}}
     e = assert_raises StandardError do
       TimeTree::BaseModel.to_model data
     end
@@ -439,12 +446,9 @@ class TimeTreeClientTest < TimeTreeBaseTest
     assert_equal 'type is required.', e.message
   end
 
-  def test_to_model_then_fail_because_type_is_unknown
-    data = { id: 'hoge', type: 'unknown', attributes: {} }
-    e = assert_raises StandardError do
-      TimeTree::BaseModel.to_model data
-    end
-    assert_equal TimeTree::Error, e.class
-    assert_equal "type 'unknown' is unknown.", e.message
+  def test_to_model_then_return_hash_because_type_is_unknown
+    data = {id: 'hoge', type: 'unknown', attributes: {field1: 'a', field2: 'b'}}
+    actual = TimeTree::BaseModel.to_model data
+    assert_equal actual, data
   end
 end

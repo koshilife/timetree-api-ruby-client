@@ -32,7 +32,7 @@ module TimeTree
     # @since 0.0.1
     def event(event_id)
       check_client
-      @client.event id, event_id
+      get_event(event_id)
     end
 
     #
@@ -48,7 +48,7 @@ module TimeTree
     # @since 0.0.1
     def upcoming_events(days: 7, timezone: 'UTC')
       check_client
-      @client.upcoming_events id, days: days, timezone: timezone
+      get_upcoming_event(days, timezone)
     end
 
     #
@@ -62,7 +62,7 @@ module TimeTree
       return @members if defined? @members
 
       check_client
-      @members = @client.calendar_members id
+      @members = get_members
     end
 
     #
@@ -76,7 +76,41 @@ module TimeTree
       return @labels if defined? @labels
 
       check_client
-      @labels = @client.calendar_labels id
+      @labels = get_labels
+    end
+
+  private
+
+    def get_event(event_id)
+      if @client.is_a?(CalendarApp::Client)
+        @client.event(event_id)
+      else
+        @client.event(id, event_id)
+      end
+    end
+
+    def get_upcoming_event(days, timezone)
+      if @client.is_a?(CalendarApp::Client)
+        @client.upcoming_events(days: days, timezone: timezone)
+      else
+        @client.upcoming_events(id, days: days, timezone: timezone)
+      end
+    end
+
+    def get_members
+      if @client.is_a?(CalendarApp::Client)
+        @client.calendar_members
+      else
+        @client.calendar_members(id)
+      end
+    end
+
+    def get_labels
+      if @client.is_a?(CalendarApp::Client)
+        raise Error.new 'CalendarApp does not support label api'
+      else
+        @client.calendar_labels(id)
+      end
     end
   end
 end

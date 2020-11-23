@@ -15,10 +15,10 @@ module TimeTree
     # @param data [Hash]
     # TimeTree apis's response data.
     # @param included [Hash]
-    # @param client [TimeTree::Client]
-    # @return [TimeTree::User, TimeTree::Label, TimeTree::Calendar, TimeTree::Event, TimeTree::Activity]
+    # @param client [TimeTree::OAuthApp::Client, TimeTree::CalendarApp::Client]
+    # @return [TimeTree::User, TimeTree::Label, TimeTree::Calendar, TimeTree::Event, TimeTree::Activity, Hash]
     # A TimeTree model object that be based on the type.
-    # @raise [TimeTree::Error] if the type property is not set or unknown.
+    # @raise [TimeTree::Error] if the type property is not set.
     # @since 0.0.1
     def self.to_model(data, included: nil, client: nil) # rubocop:disable all
       id = data[:id]
@@ -37,18 +37,22 @@ module TimeTree
       }
 
       case type
-      when 'user'
-        User.new(**params)
-      when 'label'
-        Label.new(**params)
+      when 'activity'
+        Activity.new(**params)
+      when 'application'
+        Application.new(**params)
       when 'calendar'
         Calendar.new(**params)
       when 'event'
         Event.new(**params)
-      when 'activity'
-        Activity.new(**params)
+      when 'label'
+        Label.new(**params)
+      when 'user'
+        User.new(**params)
       else
-        raise Error.new("type '#{type}' is unknown.")
+        TimeTree.configuration.logger.warn("type '#{type}' is unknown. id:#{id}")
+        # when unexpected model type, return the 'data' argument.
+        data
       end
     end
 
@@ -114,8 +118,17 @@ module TimeTree
         item = to_model(data)
         next unless item
 
-        @_relation_data_dic[item.type] ||= {}
-        @_relation_data_dic[item.type][item.id] = item
+        if item.is_a? Hash
+          item_id = item[:id]
+          item_type = item[:type]
+        else
+          item_id = item.id
+          item_type = item.type
+        end
+        next unless item_id && item_type
+
+        @_relation_data_dic[item_type] ||= {}
+        @_relation_data_dic[item_type][item_id] = item
       end
       detect_relation_data = lambda { |type, id|
         return unless @_relation_data_dic[type]

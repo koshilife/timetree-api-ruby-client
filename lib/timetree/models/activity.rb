@@ -31,7 +31,7 @@ module TimeTree
     # @since 0.0.1
     def create
       check_client
-      @client.create_activity calendar_id, event_id, data_params
+      _create
     end
 
     #
@@ -43,6 +43,16 @@ module TimeTree
       {
         data: {attributes: {content: content}}
       }
+    end
+
+  private
+
+    def _create
+      if @client.is_a?(CalendarApp::Client)
+        @client.create_activity(event_id, data_params)
+      else
+        @client.create_activity(calendar_id, event_id, data_params)
+      end
     end
   end
 end

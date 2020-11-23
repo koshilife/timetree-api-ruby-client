@@ -17,16 +17,16 @@ require 'assert_helper'
 class TimeTreeBaseTest < Minitest::Test
   include AssertHelper
 
-  HOST = TimeTree::Client::API_HOST
+  HOST = TimeTree::BaseClient::API_HOST
 
   def setup
-    @client = TimeTree::Client.new('token')
+    @client = TimeTree::OAuthApp::Client.new('token')
   end
 
-  private
+private
 
   def default_request_headers(token = 'token')
-    { 'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => "Bearer #{token}" }
+    {'Accept' => 'application/vnd.timetree.v1+json', 'Authorization' => "Bearer #{token}"}
   end
 
   def default_response_headers
