@@ -2,11 +2,12 @@
 
 require 'test_helper'
 
-class TimeTreeClientTest < TimeTreeBaseTest
+class TimeTreeOAuthAppClientTest < TimeTreeBaseTest
+
   def test_initialize
     e =
       assert_raises StandardError do
-        TimeTree::Client.new
+        TimeTree::OAuthApp::Client.new
       end
     assert_equal(TimeTree::Error, e.class)
     assert_equal('token is required.', e.message)
@@ -15,12 +16,12 @@ class TimeTreeClientTest < TimeTreeBaseTest
     TimeTree.configure do |config|
       config.token = 'token_from_configure'
     end
-    client = TimeTree::Client.new
+    client = TimeTree::OAuthApp::Client.new
     assert_equal 'token_from_configure', client.token
   end
 
   #
-  # test for TimeTree::Client#current_user
+  # test for TimeTree::OAuthApp::Client#current_user
   #
 
   def test_fetch_current_user
@@ -44,7 +45,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar
+  # test for TimeTree::OAuthApp::Client#calendar
   #
 
   def test_fetch_calendar
@@ -86,7 +87,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendars
+  # test for TimeTree::OAuthApp::Client#calendars
   #
 
   def test_fetch_calendars
@@ -122,7 +123,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar_members
+  # test for TimeTree::OAuthApp::Client#calendar_members
   #
 
   def test_fetch_calendar_members
@@ -151,7 +152,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar_labels
+  # test for TimeTree::OAuthApp::Client#calendar_labels
   #
 
   def test_fetch_calendar_labels
@@ -180,7 +181,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#event
+  # test for TimeTree::OAuthApp::Client#event
   #
 
   def test_fetch_event
@@ -232,7 +233,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#upcoming_events
+  # test for TimeTree::OAuthApp::Client#upcoming_events
   #
 
   def test_fetch_upcoming_event
@@ -277,7 +278,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_event
+  # test for TimeTree::OAuthApp::Client#create_event
   #
 
   def test_create_event
@@ -309,7 +310,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#update_event
+  # test for TimeTree::OAuthApp::Client#update_event
   #
 
   def test_update_event
@@ -347,7 +348,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#delete_event
+  # test for TimeTree::OAuthApp::Client#delete_event
   #
 
   def test_delete_event
@@ -381,7 +382,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_activity
+  # test for TimeTree::OAuthApp::Client#create_activity
   #
 
   def test_create_activity
@@ -418,7 +419,7 @@ class TimeTreeClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#inspect
+  # test for TimeTree::OAuthApp::Client#inspect
   #
 
   def test_inspect

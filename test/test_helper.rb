@@ -17,10 +17,10 @@ require 'assert_helper'
 class TimeTreeBaseTest < Minitest::Test
   include AssertHelper
 
-  HOST = TimeTree::Client::API_HOST
+  HOST = TimeTree::BaseClient::API_HOST
 
   def setup
-    @client = TimeTree::Client.new('token')
+    @client = TimeTree::OAuthApp::Client.new('token')
   end
 
 private

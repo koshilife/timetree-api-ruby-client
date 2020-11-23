@@ -56,7 +56,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar
+  # test for TimeTree::OAuthApp::Client#calendar
   #
 
   def test_fetch_calendar
@@ -78,7 +78,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#calendar_members
+  # test for TimeTree::OAuthApp::Client#calendar_members
   #
 
   def test_fetch_calendar_members
@@ -98,7 +98,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#event
+  # test for TimeTree::OAuthApp::Client#event
   #
 
   def test_fetch_event
@@ -146,7 +146,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#upcoming_events
+  # test for TimeTree::OAuthApp::Client#upcoming_events
   #
 
   def test_fetch_upcoming_event
@@ -180,7 +180,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_event
+  # test for TimeTree::OAuthApp::Client#create_event
   #
 
   def test_create_event
@@ -203,7 +203,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#update_event
+  # test for TimeTree::OAuthApp::Client#update_event
   #
 
   def test_update_event
@@ -231,7 +231,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#delete_event
+  # test for TimeTree::OAuthApp::Client#delete_event
   #
 
   def test_delete_event
@@ -256,7 +256,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#create_activity
+  # test for TimeTree::OAuthApp::Client#create_activity
   #
 
   def test_create_activity
@@ -284,7 +284,7 @@ class TimeTreeCalendarAppClientTest < TimeTreeBaseTest
   end
 
   #
-  # test for TimeTree::Client#inspect
+  # test for TimeTree::OAuthApp::Client#inspect
   #
 
   def test_inspect

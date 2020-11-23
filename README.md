@@ -35,10 +35,10 @@ Set a `token` variable to the value you got by above:
 TimeTree.configure do |config|
   config.token = '<YOUR_ACCESS_TOKEN>'
 end
-client = TimeTree::Client.new
+client = TimeTree::OAuthApp::Client.new
 
-# set token by TimeTree::Client initializer.
-client = TimeTree::Client.new('<YOUR_ACCESS_TOKEN>')
+# set token by TimeTree::OAuthApp::Client initializer.
+client = TimeTree::OAuthApp::Client.new('<YOUR_ACCESS_TOKEN>')
 
 # get a current user's information.
 user = client.current_user
