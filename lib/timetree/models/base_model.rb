@@ -50,7 +50,7 @@ module TimeTree
       when 'user'
         User.new(**params)
       else
-        TimeTree.configuration.logger&.warn("type '#{type}' is unknown. id:#{id}")
+        TimeTree.configuration.logger.warn("type '#{type}' is unknown. id:#{id}")
         # when unexpected model type, return the 'data' argument.
         data
       end
