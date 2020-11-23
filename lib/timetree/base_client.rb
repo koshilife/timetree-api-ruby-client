@@ -24,7 +24,7 @@ module TimeTree
       @ratelimit_reset_at = Time.at reset.to_i if reset
     end
 
-    private
+  private
 
     def check_event_id(value)
       check_required_property(value, 'event_id')

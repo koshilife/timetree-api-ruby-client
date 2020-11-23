@@ -25,60 +25,85 @@ Or install it yourself as:
 
     $ gem install timetree
 
-## Usage
+## Usage for Calendar App
 
-The APIs client needs access token.
-Set a `token` variable to the value you got by above:
+The APIs client for Calendar App needs installation_id, application_id and private key.
 
 ```ruby
 # set token by TimeTree.configure methods.
 TimeTree.configure do |config|
-  config.token = '<YOUR_ACCESS_TOKEN>'
+  config.calendar_app_application_id = '<YOUR_APPLICATION_ID>'
+  config.calendar_app_private_key = File.read('<YOUR_PATH_TO_PEM>')
 end
-client = TimeTree::Client.new
+client = TimeTree::CalendarApp::Client.new('<INSTALLATION_ID>')
 
-# set token by TimeTree::Client initializer.
-client = TimeTree::Client.new('<YOUR_ACCESS_TOKEN>')
+# set token by TimeTree::CalendarApp::Client initializer.
+client = TimeTree::CalendarApp::Client.new('<INSTALLATION_ID>', '<YOUR_APPLICATION_ID>', '<YOUR_PRIVATE_KEY_CONTENT>')
 
-# get a current user's information.
-user = client.current_user
-=> #<TimeTree::User id:xxx_u001>
-user.name
-=> "USER Name"
-
-# get current user's calendars.
-cals = client.calendars
-=> [#<TimeTree::Calendar id:xxx_cal001>, #<TimeTree::Calendar id:xxx_cal002>, ...]
-cal = cals.first
-cal.name
-=> "Calendar Name"
+# get connected calendar's information.
+cal = client.calendar
+# => #<TimeTree::Calendar id:xxx_cal001>
 
 # get upcoming events on the calendar.
 evs = cal.upcoming_events
-=> [#<TimeTree::Event id:xxx_ev001>, #<TimeTree::Event id:xxx_ev002>, ...]
+# => [#<TimeTree::Event id:xxx_ev001>, #<TimeTree::Event id:xxx_ev002>, ...]
+ev = evs.first.title
+# => "Event Title"
+```
+
+## Usage for OAuth App
+
+The APIs client for OAuth App needs access token.
+
+```ruby
+# set token by TimeTree.configure methods.
+TimeTree.configure do |config|
+  config.oauth_app_token = '<YOUR_ACCESS_TOKEN>'
+end
+client = TimeTree::OAuthApp::Client.new
+
+# set token by TimeTree::OAuthApp::Client initializer.
+client = TimeTree::OAuthApp::Client.new('<YOUR_ACCESS_TOKEN>')
+
+# get a current user's information.
+user = client.current_user
+# => #<TimeTree::User id:xxx_u001>
+user.name
+# => "USER Name"
+
+# get current user's calendars.
+cals = client.calendars
+# => [#<TimeTree::Calendar id:xxx_cal001>, #<TimeTree::Calendar id:xxx_cal002>, ...]
+cal = cals.first
+cal.name
+# => "Calendar Name"
+
+# get upcoming events on the calendar.
+evs = cal.upcoming_events
+# => [#<TimeTree::Event id:xxx_ev001>, #<TimeTree::Event id:xxx_ev002>, ...]
 ev = evs.first
 ev.title
-=> "Event Title"
+# => "Event Title"
 
 # updates an event.
 ev.title += ' Updated'
 ev.start_at = Time.parse('2020-06-20 09:00 +09:00')
 ev.end_at = Time.parse('2020-06-20 10:00 +09:00')
 ev.update
-=> #<TimeTree::Event id:xxx_ev001>
+# => #<TimeTree::Event id:xxx_ev001>
 
 # creates an event.
 copy_ev = ev.dup
 new_ev = copy_ev.create
-=> #<TimeTree::Event id:xxx_new_ev001>
+# => #<TimeTree::Event id:xxx_new_ev001>
 
 # deletes an event.
 ev.delete
-=> true
+# => true
 
 # creates a comment to an event.
 ev.create_comment 'Hi there!'
-=> #<TimeTree::Activity id:xxx_act001>
+# => #<TimeTree::Activity id:xxx_act001>
 
 # handles APIs error.
 begin
@@ -90,7 +115,11 @@ rescue TimeTree::ApiError => e
   e.response
   => #<Faraday::Response>
 end
+```
 
+## Logging
+
+```ruby
 # if the log level set :debug, you can get the request/response information.
 TimeTree.configuration.logger.level = :debug
 => #<TimeTree::Event id:event_id_001_not_found>

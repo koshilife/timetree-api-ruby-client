@@ -89,7 +89,7 @@ class TimeTreeEventTest < TimeTreeBaseTest
 
   def test_create_comment
     message = 'comment1'
-    data_params = { data: { attributes: { content: message } } }
+    data_params = {data: {attributes: {content: message}}}
     res_body = load_test_data('activity_001_create.json')
     add_stub_request(:post, "#{HOST}/calendars/CAL001/events/EV001/activities", req_body: data_params, res_status: 201, res_body: res_body)
 
@@ -125,8 +125,8 @@ class TimeTreeEventTest < TimeTreeBaseTest
           url: 'https://github.com'
         },
         relationships: {
-          label: { data: { type: 'label', id: 'CAL001,7' } },
-          attendees: { data: [{ type: 'user', id: 'CAL001,USER001' }] }
+          label: {data: {type: 'label', id: 'CAL001,7'}},
+          attendees: {data: [{type: 'user', id: 'CAL001,USER001'}]}
         }
       }
     }
@@ -134,10 +134,10 @@ class TimeTreeEventTest < TimeTreeBaseTest
   end
 
   def test_data_params_with_label_and_attendees
-    label_params = { type: 'label', id: 'CAL001,4' }
+    label_params = {type: 'label', id: 'CAL001,4'}
     @ev.label = TimeTree::Label.new(**label_params)
-    user_params1 = { type: 'user', id: 'CAL001,USER001' }
-    user_params2 = { type: 'user', id: 'CAL001,USER002' }
+    user_params1 = {type: 'user', id: 'CAL001,USER001'}
+    user_params2 = {type: 'user', id: 'CAL001,USER002'}
     @ev.attendees = [user_params1, user_params2].map { |params| TimeTree::User.new(**params) }
     expected = {
       data: {
@@ -154,8 +154,8 @@ class TimeTreeEventTest < TimeTreeBaseTest
           url: 'https://github.com'
         },
         relationships: {
-          label: { data: { type: 'label', id: 'CAL001,4' } },
-          attendees: { data: [{ type: 'user', id: 'CAL001,USER001' }, { type: 'user', id: 'CAL001,USER002' }] }
+          label: {data: {type: 'label', id: 'CAL001,4'}},
+          attendees: {data: [{type: 'user', id: 'CAL001,USER001'}, {type: 'user', id: 'CAL001,USER002'}]}
         }
       }
     }

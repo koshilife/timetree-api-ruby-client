@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.0.0
+
+- add Calendar App Client. (refs #28)
+- rename `TimeTree::OAuthApp::Client` from `TimeTree::Client`.
+
 ## 0.3.2
 
 - remove zeitwerk dependency. (refs #29)

@@ -159,16 +159,16 @@ module AssertHelper
     assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.created_at.to_i
     assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
     assert_equal 'CAL001,7', ev.relationships[:label][:id]
-    assert_equal 'CAL001,USER001', ev.relationships[:creator][:id]
+    assert_equal 'CAL001,APP001', ev.relationships[:creator][:id]
     attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
     assert_equal %w[CAL001,USER001], attendee_ids
     if include_option
       creator = ev.creator
-      assert_equal 'CAL001,USER001', creator.id
-      assert_equal 'user', creator.type
-      assert_equal 'USER001 Name', creator.name
-      assert_equal 'USER001 Description', creator.description
-      assert_equal 'https://attachments.timetreeapp.com/USER001.png', creator.image_url
+      assert_equal 'CAL001,APP001', creator.id
+      assert_equal 'application', creator.type
+      assert_equal 'APPLICATION001 Name', creator.name
+      assert_equal 'APPLICATION001 Description', creator.description
+      assert_equal 'https://attachments.timetreeapp.com/APP001.png', creator.image_url
 
       label = ev.label
       assert_equal 'CAL001,7', label.id
@@ -294,6 +294,56 @@ module AssertHelper
     assert_nil ev.creator
     assert_nil ev.label
     assert_nil ev.attendees
+  end
+
+  def assert_ev099(ev, include_option: false, skip_assert_id: false, skip_assert_title: false, skip_assert_calendar_id: false)
+    assert_equal 'EV099', ev.id unless skip_assert_id
+    assert_equal 'event', ev.type
+    assert_equal 'EV099 Title', ev.title unless skip_assert_title
+    assert_equal 'schedule', ev.category
+    assert_equal false, ev.all_day
+    assert_equal Time.parse('2020-06-20T10:00:00.000Z').to_i, ev.start_at.to_i
+    assert_equal 'Asia/Tokyo', ev.start_timezone
+    assert_equal Time.parse('2020-06-20T11:00:00.000Z').to_i, ev.end_at.to_i
+    assert_equal 'Asia/Tokyo', ev.end_timezone
+    assert_nil ev.recurrence
+    assert_nil ev.recurring_uuid
+    assert_nil ev.description
+    assert_equal 'EV099 Location', ev.location
+    assert_equal 'https://github.com', ev.url
+    assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.updated_at.to_i
+    assert_equal Time.parse('2020-06-18T09:00:00.000Z').to_i, ev.created_at.to_i
+    assert_equal 'CAL001', ev.calendar_id unless skip_assert_calendar_id
+    assert_equal 'CAL001,7', ev.relationships[:label][:id]
+    assert_equal 'CAL001,UNKNOWN001', ev.relationships[:creator][:id]
+    attendee_ids = ev.relationships[:attendees].map { |d| d[:id] }
+    assert_equal %w[CAL001,USER001], attendee_ids
+    if include_option
+      expected_creator = {
+        id: 'CAL001,UNKNOWN001',
+        type: 'unknown',
+        attributes: {
+          field1: 'UNKNOWN001 FIELD1',
+          field2: 'UNKNOWN001 FIELD2'
+        }
+      }
+      assert_equal expected_creator, ev.creator
+
+      label = ev.label
+      assert_equal 'CAL001,7', label.id
+      assert_equal 'label', label.type
+      assert_equal 'French rose', label.name
+      assert_equal '#f35f8c', label.color
+
+      attendees = ev.attendees
+      assert_equal 1, ev.attendees.length
+      att1 = attendees[0]
+      assert_equal 'CAL001,USER001', att1.id
+      assert_equal 'user', att1.type
+      assert_equal 'USER001 Name', att1.name
+      assert_equal 'USER001 Description', att1.description
+      assert_equal 'https://attachments.timetreeapp.com/USER001.png', att1.image_url
+    end
   end
 
   def assert_activity001(act, skip_assert_calendar_id: false)

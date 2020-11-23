@@ -70,8 +70,8 @@
         },
         "creator": {
           "data": {
-            "id": "CAL001,USER001",
-            "type": "user"
+            "id": "CAL001,APP001",
+            "type": "application"
           }
         },
         "attendees": {
@@ -135,6 +135,15 @@
         "name": "USER001 Name",
         "description": "USER001 Description",
         "image_url": "https://attachments.timetreeapp.com/USER001.png"
+      }
+    },
+    {
+      "id": "CAL001,APP001",
+      "type": "application",
+      "attributes": {
+        "name": "APPLICATION001 Name",
+        "description": "APPLICATION001 Description",
+        "image_url": "https://attachments.timetreeapp.com/APP001.png"
       }
     },
     {

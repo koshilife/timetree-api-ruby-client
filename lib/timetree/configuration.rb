@@ -5,17 +5,20 @@ require 'logger'
 module TimeTree
   # TimeTree apis client configuration.
   class Configuration
-    # @return [String]
-    attr_accessor :token
-    # @return [String]
-    attr_accessor :application_id
-    # @return [String]
-    attr_accessor :private_key
+    # @return [String] OAuthApp's access token
+    attr_accessor :oauth_app_token
+
+    # @return [String] CalendarApp's app id
+    attr_accessor :calendar_app_application_id
+    # @return [String] CalendarApp's private key content#
+    # e.g. File.read('<YOUR_PATH_TO_PEM_FILE>')
+    attr_accessor :calendar_app_private_key
+
     # @return [Logger]
     attr_accessor :logger
 
     def initialize
-      @logger = Logger.new(STDOUT)
+      @logger = Logger.new $stdout
       @logger.level = :warn
     end
   end

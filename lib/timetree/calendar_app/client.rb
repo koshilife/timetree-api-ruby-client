@@ -19,10 +19,10 @@ module TimeTree
       # @param installation_id [Integer] CalendarApp's installation id
       # @param application_id [String] CalendarApp id
       # @param private_key [String] RSA private key for CalendarApp
-      def initialize(installation_id, application_id = nil , private_key = nil)
+      def initialize(installation_id, application_id = nil, private_key = nil)
         @installation_id = installation_id
-        @application_id = application_id || TimeTree.configuration.application_id
-        @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.private_key).to_s)
+        @application_id = application_id || TimeTree.configuration.calendar_app_application_id
+        @private_key = OpenSSL::PKey::RSA.new((private_key || TimeTree.configuration.calendar_app_private_key).to_s)
         check_client_requirement
         @http_cmd = HttpCommand.new(API_HOST, self)
       rescue OpenSSL::PKey::RSAError
@@ -36,6 +36,7 @@ module TimeTree
       # includes association's object in the response.
       # @return [TimeTree::Calendar]
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def calendar(include_relationships: nil)
         check_access_token
         params = relationships_params(include_relationships, Calendar::RELATIONSHIPS)
@@ -50,6 +51,7 @@ module TimeTree
       #
       # @return [Array<TimeTree::User>]
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def calendar_members
         check_access_token
         res = http_cmd.get('/calendar/members')
@@ -67,6 +69,7 @@ module TimeTree
       # @return [TimeTree::Event]
       # @raise [TimeTree::Error] if the event_id arg is empty.
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def event(event_id, include_relationships: nil)
         check_event_id event_id
         check_access_token
@@ -86,6 +89,7 @@ module TimeTree
       # includes association's object in the response.
       # @return [Array<TimeTree::Event>]
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def upcoming_events(days: 7, timezone: 'UTC', include_relationships: nil)
         check_access_token
         params = relationships_params(include_relationships, Event::RELATIONSHIPS)
@@ -104,6 +108,7 @@ module TimeTree
       # @return [TimeTree::Event]
       # @raise [TimeTree::Error] if the cal_id arg is empty.
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def create_event(params)
         check_access_token
         res = http_cmd.post('/calendar/events', params)
@@ -121,6 +126,7 @@ module TimeTree
       # @return [TimeTree::Event]
       # @raise [TimeTree::Error] if the event_id arg is empty.
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def update_event(event_id, params)
         check_event_id event_id
         check_access_token
@@ -137,6 +143,7 @@ module TimeTree
       # @return [true] if the operation succeeded.
       # @raise [TimeTree::Error] if the event_id arg is empty.
       # @raise [TimeTree::ApiError] if the http response status will not success.
+      # @since 1.0.0
       def delete_event(event_id)
         check_event_id event_id
         check_access_token
@@ -155,6 +162,7 @@ module TimeTree
       # @return [TimeTree::Activity]
       # @raise [TimeTree::Error] if the event_id arg is empty.
       # @raise [TimeTree::ApiError] if the http response status is not success.
+      # @since 1.0.0
       def create_activity(event_id, params)
         check_event_id event_id
         check_access_token
@@ -177,7 +185,7 @@ module TimeTree
         "\#<#{self.class}:#{object_id}#{limit_info}>"
       end
 
-      private
+    private
 
       attr_reader :http_cmd, :access_token
 
@@ -188,6 +196,7 @@ module TimeTree
 
       def check_access_token
         return if access_token?
+
         get_access_token
       end
 
